@@ -1,6 +1,6 @@
 <template>
   <div :data-vue-component="$options.name">
-    <router-view />
+    <!-- // -->
   </div>
 </template>
 
@@ -8,6 +8,6 @@
 import Vue from 'vue';
 
 export default Vue.extend({
-  name: 'App',
+  name: 'LogIn',
 });
 </script>
