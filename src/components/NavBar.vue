@@ -3,8 +3,6 @@
     <b-navbar type="is-light" shadow>
       <template #brand>
         <b-navbar-item tag="router-link" :to="{ name: 'HomePage' }">
-          <b-icon icon="home" size="is-medium" />
-
           <span>
             Shifts Manager
           </span>
@@ -12,8 +10,12 @@
       </template>
 
       <template #end>
+        <b-navbar-item v-if="isAuthenticated" tag="span">
+          Welcome {{ currentUser.displayName }}
+        </b-navbar-item>
+
         <b-navbar-item tag="div">
-          <router-link v-if="isAuthenticated" :to="{ name: 'Auth/SignOut' }">
+          <router-link v-if="isAuthenticated" class="button is-dark" :to="{ name: 'Auth/SignOut' }">
             Sign-out
           </router-link>
 
@@ -34,13 +36,18 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import firebase from 'firebase/app';
 
 export default Vue.extend({
   name: 'NavBar',
 
   computed: {
+    currentUser(): firebase.User | null {
+      return this.$store.state.auth.currentUser;
+    },
+
     isAuthenticated(): boolean {
-      return !!this.$store.state.auth.currentUser;
+      return !!this.currentUser;
     },
   },
 });

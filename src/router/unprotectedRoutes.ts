@@ -1,7 +1,5 @@
 import { RouteConfig } from 'vue-router';
 
-import store from '../store';
-
 const routes: Array<RouteConfig> = [
   // Homepage
   {
@@ -14,42 +12,23 @@ const routes: Array<RouteConfig> = [
   {
     path: '/auth',
     name: 'Auth/Home',
-    redirect: {
-      name: 'Auth/LogIn',
-    },
+    redirect: { name: 'Auth/LogIn' },
     component: () => import(/* webpackChunkName: 'Auth' */ '@/views/auth/AuthHome.vue'),
     children: [
       {
         path: 'signup',
         name: 'Auth/SignUp',
         component: () => import(/* webpackChunkName: 'Auth' */ '@/views/auth/SignUp.vue'),
-        beforeEnter(to, from, next) {
-          const { currentUser } = store.state.auth;
-
-          if (currentUser) {
-            next({ name: 'HomePage' });
-
-            return;
-          }
-
-          next();
-        },
       },
       {
         path: 'login',
         name: 'Auth/LogIn',
         component: () => import(/* webpackChunkName: 'Auth' */ '@/views/auth/LogIn.vue'),
-        beforeEnter(to, from, next) {
-          const { currentUser } = store.state.auth;
-
-          if (currentUser) {
-            next({ name: 'HomePage' });
-
-            return;
-          }
-
-          next();
-        },
+      },
+      {
+        path: 'signout',
+        name: 'Auth/SignOut',
+        component: () => import('@/views/auth/SignOut.vue'),
       },
     ],
   },
