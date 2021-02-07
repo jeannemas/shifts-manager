@@ -8,22 +8,19 @@ import unprotectedRoutes from './unprotectedRoutes';
 
 Vue.use(VueRouter);
 
-const routes: Array<RouteConfig> = [
-  ...protectedRoutes.map((route) => ({
+const hydrateRoutes = (routes: RouteConfig[], requireAuth: boolean): RouteConfig[] =>
+  routes.map((route) => ({
     ...route,
     meta: {
       ...(route.meta || {}),
-      requireAuth: true,
+      requireAuth: 'requireAuth' in (route.meta || {}) ? route.meta.requireAuth : requireAuth,
     },
-  })),
+  }));
 
-  ...unprotectedRoutes.map((route) => ({
-    ...route,
-    meta: {
-      ...(route.meta || {}),
-      requireAuth: false,
-    },
-  })),
+const routes: Array<RouteConfig> = [
+  ...hydrateRoutes(protectedRoutes, true),
+
+  ...hydrateRoutes(unprotectedRoutes, false),
 ];
 
 const router = new VueRouter({

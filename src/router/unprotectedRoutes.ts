@@ -11,19 +11,23 @@ const routes: Array<RouteConfig> = [
   // Auth
   {
     path: '/auth',
-    name: 'Auth/Home',
-    redirect: { name: 'Auth/LogIn' },
-    component: () => import(/* webpackChunkName: 'Auth' */ '@/views/auth/AuthHome.vue'),
+    component: () => import('@/views/auth/AuthRoot.vue'),
     children: [
+      {
+        path: '',
+        name: 'Auth/Home',
+        redirect: { name: 'Auth/LogIn' },
+        component: () => import('@/views/auth/AuthHome.vue'),
+      },
       {
         path: 'signup',
         name: 'Auth/SignUp',
-        component: () => import(/* webpackChunkName: 'Auth' */ '@/views/auth/SignUp.vue'),
+        component: () => import('@/views/auth/SignUp.vue'),
       },
       {
         path: 'login',
         name: 'Auth/LogIn',
-        component: () => import(/* webpackChunkName: 'Auth' */ '@/views/auth/LogIn.vue'),
+        component: () => import('@/views/auth/LogIn.vue'),
       },
       {
         path: 'signout',
