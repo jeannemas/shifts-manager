@@ -62,6 +62,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { mapGetters } from 'vuex';
 import firebase from 'firebase';
 
 export default Vue.extend({
@@ -79,9 +80,7 @@ export default Vue.extend({
   },
 
   computed: {
-    currentUser(): firebase.User | null {
-      return this.$store.state.auth.currentUser;
-    },
+    ...mapGetters({ currentUser: 'auth/currentUser' }),
   },
 
   watch: {
@@ -109,15 +108,15 @@ export default Vue.extend({
 
       try {
         await this.$store.dispatch('auth/signup', this.form);
-
-        this.$router.push({ name: 'HomePage' });
-
-        return;
       } catch (error) {
         console.error(error);
 
-        this.errorMessage = 'An error occured';
+        this.errorMessage = error.message;
+
+        return;
       }
+
+      this.$router.push({ name: 'HomePage' });
     },
   },
 });

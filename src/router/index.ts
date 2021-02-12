@@ -21,6 +21,13 @@ const routes: Array<RouteConfig> = [
   ...hydrateRoutes(protectedRoutes, true),
 
   ...hydrateRoutes(unprotectedRoutes, false),
+
+  // 404
+  {
+    path: '*',
+    name: 'NotFound',
+    component: () => import('@/components/NotFound.vue'),
+  },
 ];
 
 const router = new VueRouter({
@@ -33,11 +40,11 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   if (
     to.matched.some(({ meta: { requireAuth } }) => requireAuth) &&
-    !store.state.auth.currentUser
+    !store.getters['auth/currentUser']
   ) {
     console.log('Authentication required');
 
-    next({ name: 'Auth/LogIn', query: { r: to.fullPath } });
+    next({ name: 'Auth/LogIn', query: { redirect: to.fullPath } });
 
     return;
   }

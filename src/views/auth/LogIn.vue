@@ -30,15 +30,17 @@
                   />
                 </b-field>
 
-                <div class="has-text-centered">
+                <b-field class="has-text-centered">
                   <button class="button is-success" type="submit">
                     Log-in
                   </button>
-                </div>
+                </b-field>
 
-                <p v-if="errorMessage" class="help is-danger has-text-centered is-size-5">
-                  {{ errorMessage }}
-                </p>
+                <b-field>
+                  <p v-if="errorMessage" class="notification is-danger has-text-centered">
+                    {{ errorMessage }}
+                  </p>
+                </b-field>
               </form>
             </div>
           </div>
@@ -50,6 +52,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { mapGetters } from 'vuex';
 import firebase from 'firebase';
 
 export default Vue.extend({
@@ -66,9 +69,7 @@ export default Vue.extend({
   },
 
   computed: {
-    currentUser(): firebase.User | null {
-      return this.$store.state.auth.currentUser;
-    },
+    ...mapGetters({ currentUser: 'auth/currentUser' }),
   },
 
   watch: {
@@ -78,7 +79,7 @@ export default Vue.extend({
           return;
         }
 
-        const returnPath = this.$route.query.r;
+        const returnPath = this.$route.query.redirect;
 
         if (returnPath) {
           this.$router.push({ path: returnPath.toString() });
@@ -107,7 +108,7 @@ export default Vue.extend({
       } catch (error) {
         console.error(error);
 
-        this.errorMessage = 'An error occured';
+        this.errorMessage = 'Invalid email and/or passwword';
       }
     },
   },

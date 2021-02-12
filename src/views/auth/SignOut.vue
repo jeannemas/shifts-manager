@@ -16,7 +16,7 @@ export default Vue.extend({
     } catch (error) {
       console.error(error);
     } finally {
-      const returnPath = this.$route.query.r;
+      const returnPath = this.$route.query.redirect;
 
       if (returnPath) {
         this.$router.push({ path: returnPath.toString() });

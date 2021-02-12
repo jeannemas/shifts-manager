@@ -1,12 +1,14 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import auth, { AuthModule } from './auth';
+import auth from './auth';
+import manage from './manage';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store<{ auth: AuthModule }>({
+export default new Vuex.Store({
   modules: {
     auth,
+    manage,
   },
 });

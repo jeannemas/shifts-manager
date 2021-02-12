@@ -13,6 +13,22 @@ firebase.initializeApp({
   appId: '1:800988943525:web:df659bee658a146482e94c',
 });
 
-firebase.auth().onAuthStateChanged((user) => {
+let unsubscribe: (() => void) | null = null;
+
+firebase.auth().onAuthStateChanged(async (user) => {
   store.commit('auth/SET_USER', user);
+
+  if (unsubscribe) {
+    unsubscribe();
+
+    unsubscribe = null;
+  }
+
+  try {
+    if (user) {
+      unsubscribe = await store.dispatch('manage/workplaces/syncWorkplaces');
+    }
+  } catch (error) {
+    console.error(error);
+  }
 });

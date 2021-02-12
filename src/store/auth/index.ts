@@ -13,7 +13,9 @@ const module: Module<AuthModule, Record<string, unknown>> = {
     currentUser: null,
   },
 
-  getters: {},
+  getters: {
+    currentUser: ({ currentUser }) => currentUser,
+  },
 
   actions: {
     async signup(
@@ -23,10 +25,12 @@ const module: Module<AuthModule, Record<string, unknown>> = {
       try {
         const { user } = await firebase.auth().createUserWithEmailAndPassword(email, password);
 
-        await user?.updateProfile({ displayName });
-      } catch (error) {
-        console.error(error);
+        if (!user) {
+          throw new Error('User not created');
+        }
 
+        await user.updateProfile({ displayName });
+      } catch (error) {
         return Promise.reject(error);
       }
 
@@ -37,9 +41,7 @@ const module: Module<AuthModule, Record<string, unknown>> = {
       try {
         await firebase.auth().signInWithEmailAndPassword(email, password);
       } catch (error) {
-        console.error(error);
-
-        return Promise.reject();
+        return Promise.reject(error);
       }
 
       return Promise.resolve();
@@ -49,8 +51,6 @@ const module: Module<AuthModule, Record<string, unknown>> = {
       try {
         await firebase.auth().signOut();
       } catch (error) {
-        console.error(error);
-
         return Promise.reject(error);
       }
 
