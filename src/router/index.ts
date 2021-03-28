@@ -8,20 +8,31 @@ import unprotectedRoutes from './unprotectedRoutes';
 
 Vue.use(VueRouter);
 
-const hydrateRoutes = (routes: RouteConfig[], requireAuth: boolean): RouteConfig[] =>
+/**
+ * Hydrate all the routes (including their children) with some meta values
+ *
+ * @param routes The routes to hydrate
+ * @param meta The meta values to use
+ */
+const hydrateRoutes = (
+  routes: RouteConfig[] = [],
+  meta: Record<string, unknown> = {},
+): RouteConfig[] =>
   routes.map((route) => ({
     ...route,
     meta: {
       ...(route.meta || {}),
-      requireAuth: 'requireAuth' in (route.meta || {}) ? route.meta.requireAuth : requireAuth,
+      ...meta,
     },
-    children: hydrateRoutes(route.children || [], requireAuth),
+    children: hydrateRoutes(route.children, meta),
   }));
 
 const routes: Array<RouteConfig> = [
-  ...hydrateRoutes(protectedRoutes, true),
+  // The protected routes: require auth
+  ...hydrateRoutes(protectedRoutes, { requireAuth: true }),
 
-  ...hydrateRoutes(unprotectedRoutes, false),
+  // The unprotected routes: doesn't require auth, can be used as guest
+  ...hydrateRoutes(unprotectedRoutes, { requireAuth: false }),
 
   // 404
   {
