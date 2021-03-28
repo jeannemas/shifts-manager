@@ -15,6 +15,7 @@ const hydrateRoutes = (routes: RouteConfig[], requireAuth: boolean): RouteConfig
       ...(route.meta || {}),
       requireAuth: 'requireAuth' in (route.meta || {}) ? route.meta.requireAuth : requireAuth,
     },
+    children: hydrateRoutes(route.children || [], requireAuth),
   }));
 
 const routes: Array<RouteConfig> = [
@@ -38,6 +39,8 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
+  console.log(`[Navigation] Navigating to '${to.fullPath}'`);
+
   if (
     to.matched.some(({ meta: { requireAuth } }) => requireAuth) &&
     !store.getters['auth/currentUser']

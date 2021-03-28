@@ -1,3 +1,3 @@
-import './buefy';
+import './styles';
 import './font-awesome';
 import './firebase';

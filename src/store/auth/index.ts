@@ -22,8 +22,10 @@ const module: Module<AuthModule, Record<string, unknown>> = {
       context,
       { name: displayName, email, password }: { name: string; email: string; password: string },
     ): Promise<void> {
+      const auth = firebase.auth();
+
       try {
-        const { user } = await firebase.auth().createUserWithEmailAndPassword(email, password);
+        const { user } = await auth.createUserWithEmailAndPassword(email, password);
 
         if (!user) {
           throw new Error('User not created');
@@ -38,8 +40,10 @@ const module: Module<AuthModule, Record<string, unknown>> = {
     },
 
     async login(context, { email, password }: { email: string; password: string }): Promise<void> {
+      const auth = firebase.auth();
+
       try {
-        await firebase.auth().signInWithEmailAndPassword(email, password);
+        await auth.signInWithEmailAndPassword(email, password);
       } catch (error) {
         return Promise.reject(error);
       }
@@ -48,8 +52,10 @@ const module: Module<AuthModule, Record<string, unknown>> = {
     },
 
     async signout(): Promise<void> {
+      const auth = firebase.auth();
+
       try {
-        await firebase.auth().signOut();
+        await auth.signOut();
       } catch (error) {
         return Promise.reject(error);
       }
