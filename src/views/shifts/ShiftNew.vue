@@ -6,49 +6,7 @@
           Log shift
         </h1>
 
-        <form method="POST" class="box" @submit.prevent="createNewShift">
-          <b-field label="Workplace">
-            <!--  -->
-          </b-field>
-
-          <div class="columns">
-            <div class="column is-half">
-              <b-field label="Start time">
-                <b-datetimepicker
-                  v-model="startTime"
-                  placeholder="Click to select start time"
-                  append-to-body
-                />
-              </b-field>
-            </div>
-
-            <div class="column is-half">
-              <b-field label="End time">
-                <b-datetimepicker
-                  v-model="endTime"
-                  placeholder="Click to select end time"
-                  append-to-body
-                />
-              </b-field>
-            </div>
-          </div>
-
-          <b-field label="Description">
-            <b-input
-              v-model="description"
-              type="textarea"
-              placeholder="Shift description"
-              maxlength="256"
-              has-counter
-            />
-          </b-field>
-
-          <b-field>
-            <button class="button is-primary" type="submit">
-              Save shift
-            </button>
-          </b-field>
-        </form>
+        <shift-editor :shift="shift" @shift-saved="shiftCreated" />
       </div>
     </section>
   </div>
@@ -57,14 +15,29 @@
 <script lang="ts">
 import Vue from 'vue';
 
+// Models
+import { Shift } from '@/models/Shift';
+
+// Components
+import ShiftEditor from './ShiftEditor.vue';
+
 export default Vue.extend({
   name: 'ShiftNew',
 
+  components: {
+    ShiftEditor,
+  },
+
   data() {
     return {
-      startTime: null,
-      endTime: null,
-      description: null,
+      shift: {
+        id: null,
+        workplace: null,
+        startTime: null,
+        endTime: null,
+        title: null,
+        description: null,
+      } as Shift,
     };
   },
 
@@ -73,8 +46,13 @@ export default Vue.extend({
   },
 
   methods: {
-    async createNewShift() {
-      //
+    shiftCreated() {
+      this.$buefy.toast.open({
+        message: 'Shift added successfully',
+        type: 'is-success',
+      });
+
+      this.$router.push({ name: 'Shifts/Home' });
     },
   },
 });

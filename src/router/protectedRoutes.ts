@@ -16,6 +16,12 @@ const routes: Array<RouteConfig> = [
         name: 'Shifts/New',
         component: () => import('@/views/shifts/ShiftNew.vue'),
       },
+      {
+        path: 'edit/:shiftId',
+        name: 'Shifts/Edit',
+        props: true,
+        component: () => import('@/views/shifts/ShiftEdit.vue'),
+      },
     ],
   },
   {
@@ -33,23 +39,6 @@ const routes: Array<RouteConfig> = [
             name: 'Manage/Workplaces/Home',
             component: () => import('@/views/manage/workplaces/ManageWorkplacesHome.vue'),
           },
-          /* {
-            path: 'new',
-            name: 'Manage/Workplaces/New',
-            component: () => import('@/views/manage/workplaces/ManageWorkplacesNew.vue'),
-          },
-          {
-            path: 'edit/:workplaceId',
-            name: 'Manage/Worplaces/Edit',
-            component: () => import('@/views/manage/workplaces/ManageWorkplacesEdit.vue'),
-            props: true,
-          },
-          {
-            path: 'delete/:workplaceId',
-            name: 'Manage/Workplaces/Delete',
-            component: () => import('@/views/manage/workplaces/ManageWorkplacesDelete.vue'),
-            props: true,
-          }, */
         ],
       },
     ],

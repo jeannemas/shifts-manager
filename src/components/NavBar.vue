@@ -52,7 +52,7 @@
 
             <b-navbar-item
               tag="router-link"
-              :to="{ name: 'Auth/SignOut', query: { r: $route.fullPath } }"
+              :to="{ name: 'Auth/SignOut', query: { redirect: $route.fullPath } }"
             >
               <b-icon icon="sign-out-alt" />
 
