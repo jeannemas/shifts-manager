@@ -6,13 +6,7 @@
           My workplaces
         </h1>
 
-        <b-button @click="addWorkplace">
-          <b-icon icon="plus" />
-
-          <span>
-            Add workplace
-          </span>
-        </b-button>
+        <b-button icon-left="plus" label="Add workplace" @click.prevent="addWorkplace" />
 
         <b-table :data="workplaces" detailed detail-key="id">
           <b-table-column field="name" label="Name">
@@ -63,7 +57,7 @@
 
           <template #empty>
             <h3 class="subtitle has-text-centered">
-              You do not have any worplace
+              You do not have any workplace
             </h3>
           </template>
         </b-table>

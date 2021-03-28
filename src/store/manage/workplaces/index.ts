@@ -49,7 +49,7 @@ const module: Module<ManageWorkplacesModule, Record<string, unknown>> = {
 
     async addWorkplace(
       { rootGetters },
-      { name, address, description }: Omit<Workplace, 'id'>,
+      { name, address = null, description = null }: Omit<Workplace, 'id'>,
     ): Promise<void> {
       const currentUser = rootGetters['auth/currentUser'];
 
@@ -64,11 +64,7 @@ const module: Module<ManageWorkplacesModule, Record<string, unknown>> = {
           .doc(currentUser.uid)
           .collection('workplaces')
           .doc()
-          .set({
-            name,
-            address: address || null,
-            description: description || null,
-          } as Workplace);
+          .set({ name, address, description } as Omit<Workplace, 'id'>);
       } catch (error) {
         return Promise.reject(error);
       }
@@ -78,7 +74,7 @@ const module: Module<ManageWorkplacesModule, Record<string, unknown>> = {
 
     async saveWorkplace(
       { rootGetters },
-      { id, name, address, description }: Workplace,
+      { id, name, address = null, description = null }: Workplace,
     ): Promise<void> {
       const currentUser = rootGetters['auth/currentUser'];
 
@@ -93,11 +89,7 @@ const module: Module<ManageWorkplacesModule, Record<string, unknown>> = {
           .doc(currentUser.uid)
           .collection('workplaces')
           .doc(id)
-          .update({
-            name,
-            address: address || null,
-            description: description || null,
-          } as Workplace);
+          .update({ name, address, description } as Omit<Workplace, 'id'>);
       } catch (error) {
         return Promise.reject(error);
       }
@@ -113,13 +105,35 @@ const module: Module<ManageWorkplacesModule, Record<string, unknown>> = {
       }
 
       try {
-        await firebase
-          .firestore()
+        const db = firebase.firestore();
+        const affectedShifts = await db
           .collection('users')
           .doc(currentUser.uid)
-          .collection('workplaces')
-          .doc(workplaceId)
-          .delete();
+          .collection('shifts')
+          .where('workplaceId', '==', workplaceId)
+          .get();
+        const batchCount = Math.ceil(affectedShifts.size / 500);
+        const batches: Promise<unknown>[] = [];
+
+        for (let i = 0; i < batchCount; i += 1) {
+          const batch = db.batch();
+
+          affectedShifts.docs.splice(500 * i, 500).forEach((doc) => {
+            batch.update(doc.ref, { workplaceId: null });
+          });
+
+          batches.push(batch.commit());
+        }
+
+        await Promise.all([
+          ...batches,
+          db
+            .collection('users')
+            .doc(currentUser.uid)
+            .collection('workplaces')
+            .doc(workplaceId)
+            .delete(),
+        ]);
       } catch (error) {
         return Promise.reject(error);
       }
