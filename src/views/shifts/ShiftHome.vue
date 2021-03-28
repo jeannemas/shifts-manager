@@ -6,90 +6,15 @@
           My shifts
         </h1>
 
-        <b-table :data="[...unfinishedShifts, ...finishedShifts]" detailed detail-key="id" narrowed>
-          <b-table-column field="workplace" label="Workplace">
-            <template #header>
-              <b-icon icon="building" />
+        <b-tabs v-model="activeTabIndex" position="is-right" @input="tabChanged">
+          <b-tab-item icon="list" label="List">
+            <shift-list />
+          </b-tab-item>
 
-              <span>
-                Workplace
-              </span>
-            </template>
-
-            <template #default="props">
-              {{ findWorkplaceById(props.row.workplace.id).name }}
-            </template>
-          </b-table-column>
-
-          <b-table-column field="title" label="Title">
-            <template #header>
-              <b-icon icon="heading" />
-
-              <span>
-                Title
-              </span>
-            </template>
-
-            <template #default="props">
-              {{ props.row.title }}
-            </template>
-          </b-table-column>
-
-          <b-table-column field="shiftLength" label="Shift length">
-            <template #header>
-              <b-icon icon="stopwatch" />
-
-              <span>
-                Shift length
-              </span>
-            </template>
-
-            <template #default="props">
-              {{
-                ((props.row.endTime || Date.now()) - props.row.startTime) | prettyPrintElapsedTime
-              }}
-            </template>
-          </b-table-column>
-
-          <b-table-column field="actions" width="auto">
-            <template #default="props">
-              <div class="buttons is-right">
-                <b-button
-                  v-if="!props.row.endTime"
-                  size="is-small"
-                  icon-left="check"
-                  label="Finish now"
-                  @click="() => finish(props.row)"
-                />
-
-                <b-button
-                  size="is-small"
-                  icon-left="edit"
-                  tag="router-link"
-                  :to="{ name: 'Shifts/Edit', params: { shiftId: props.row.id } }"
-                />
-
-                <b-button
-                  size="is-small"
-                  icon-left="trash"
-                  @click="() => $store.dispatch('shifts/removeShift', props.row.id)"
-                />
-              </div>
-            </template>
-          </b-table-column>
-
-          <template #detail="props">
-            <p>
-              {{ props.row.description }}
-            </p>
-          </template>
-
-          <template #empty>
-            <h3 class="subtitle has-text-centered">
-              You do not have any finished shift
-            </h3>
-          </template>
-        </b-table>
+          <b-tab-item icon="calendar-alt" label="Calendar">
+            <shift-calendar />
+          </b-tab-item>
+        </b-tabs>
       </div>
     </section>
   </div>
@@ -97,40 +22,28 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { mapGetters } from 'vuex';
-import prettyMs from 'pretty-ms';
 
-// Models
-import { Shift } from '@/models/Shift';
-import { Workplace } from '@/models/Workplace';
+// Components
+import ShiftList from './ShiftList.vue';
+import ShiftCalendar from './ShiftCalendar.vue';
 
 export default Vue.extend({
   name: 'ShiftHome',
 
-  filters: {
-    prettyPrintElapsedTime: (milliseconds: number): string =>
-      prettyMs(milliseconds, { verbose: true, secondsDecimalDigits: 0 }),
+  components: {
+    ShiftList,
+    ShiftCalendar,
   },
 
-  computed: {
-    ...mapGetters({
-      workplaces: 'manage/workplaces/workplaces',
-      shifts: 'shifts/shifts',
-    }),
+  data() {
+    const tabs = ['list', 'calendar'];
+    const tab = this.$route.query.view as string;
+    const activeTabIndex = tabs.includes(tab) ? tabs.indexOf(tab) : 0;
 
-    finishedShifts(): Shift[] {
-      return (this.shifts as Shift[])
-        .filter(({ endTime }) => endTime)
-        .sort(({ startTime: a }, { startTime: b }) => (b as number) - (a as number));
-    },
-
-    unfinishedShifts(): Shift[] {
-      return (this.shifts as Shift[])
-        .filter(({ endTime }) => !endTime)
-        .sort(({ startTime: a }, { startTime: b }) => (b as number) - (a as number));
-    },
-
-    time: () => Date.now(),
+    return {
+      tabs,
+      activeTabIndex,
+    };
   },
 
   created() {
@@ -138,12 +51,12 @@ export default Vue.extend({
   },
 
   methods: {
-    findWorkplaceById(workplaceId: Workplace['id']): Workplace {
-      return this.workplaces.find(({ id }: Workplace) => id === workplaceId) || {};
-    },
+    tabChanged(tabIndex: number) {
+      const url = new URL(window.location.href);
 
-    finish(shift: Shift) {
-      this.$store.dispatch('shifts/saveShift', { ...shift, endTime: Date.now() });
+      url.searchParams.set('view', this.tabs[tabIndex]);
+
+      window.history.replaceState({}, document.title, url.href);
     },
   },
 });
