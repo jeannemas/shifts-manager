@@ -77,6 +77,7 @@ import Vue from 'vue';
 import { mapGetters } from 'vuex';
 
 // Models
+import { RetrievableEntity } from '@/models/RetrievableEntity';
 import { Workplace } from '@/models/Workplace';
 
 // Components
@@ -129,7 +130,7 @@ export default Vue.extend({
       });
     },
 
-    editWorkplace(workplace: Workplace) {
+    editWorkplace(workplace: RetrievableEntity<Workplace>) {
       const modal = this.$buefy.modal.open({
         parent: this,
         component: EditWorkplace,
@@ -164,7 +165,7 @@ export default Vue.extend({
       });
     },
 
-    removeWorkplace(workplace: Workplace) {
+    removeWorkplace(workplace: RetrievableEntity<Workplace>) {
       const modal = this.$buefy.modal.open({
         parent: this,
         component: RemoveWorkplace,

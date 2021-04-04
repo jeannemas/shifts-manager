@@ -44,6 +44,7 @@
 import Vue, { PropType } from 'vue';
 
 // Models
+import { RetrievableEntity } from '@/models/RetrievableEntity';
 import { Workplace } from '@/models/Workplace';
 
 export default Vue.extend({
@@ -51,7 +52,7 @@ export default Vue.extend({
 
   props: {
     workplace: {
-      type: Object as PropType<Workplace>,
+      type: Object as PropType<RetrievableEntity<Workplace>>,
       required: true,
     },
   },

@@ -1,13 +1,13 @@
-import firebase from 'firebase/app';
 import Vue from 'vue';
 
 import FirestoreWrapper from '@/helpers';
 
 // Models
 import { Workplace } from '@/models/Workplace';
+import { RetrievableEntity } from '@/models/RetrievableEntity';
 
 export interface ManageWorkplacesState {
-  workplaces: Workplace[];
+  workplaces: RetrievableEntity<Workplace>[];
 }
 
 type ManageWorkplacesModule = import('vuex').Module<ManageWorkplacesState, Record<string, unknown>>;
@@ -77,7 +77,7 @@ const module: ManageWorkplacesModule = {
         });
     },
 
-    async saveWorkplace({ rootGetters }, workplace: Workplace): Promise<void> {
+    async saveWorkplace({ rootGetters }, workplace: RetrievableEntity<Workplace>): Promise<void> {
       const { id, name, address, description } = workplace;
       const currentUser = rootGetters['auth/currentUser'];
 
@@ -95,7 +95,10 @@ const module: ManageWorkplacesModule = {
         });
     },
 
-    async removeWorkplace({ rootGetters }, workplaceId: Workplace['id']): Promise<void> {
+    async removeWorkplace(
+      { rootGetters },
+      workplaceId: RetrievableEntity<Workplace>['id'],
+    ): Promise<void> {
       const currentUser = rootGetters['auth/currentUser'];
 
       if (!currentUser) {
@@ -112,7 +115,7 @@ const module: ManageWorkplacesModule = {
   },
 
   mutations: {
-    SET_WORKPLACE({ workplaces }, workplace: Workplace) {
+    SET_WORKPLACE({ workplaces }, workplace: RetrievableEntity<Workplace>) {
       const index = workplaces.findIndex(({ id }) => id === workplace.id);
 
       if (index < 0) {
@@ -124,7 +127,7 @@ const module: ManageWorkplacesModule = {
       }
     },
 
-    REMOVE_WORKPLACE({ workplaces }, workplaceId: Workplace['id']) {
+    REMOVE_WORKPLACE({ workplaces }, workplaceId: RetrievableEntity<Workplace>['id']) {
       const index = workplaces.findIndex(({ id }) => id === workplaceId);
 
       if (index >= 0) {

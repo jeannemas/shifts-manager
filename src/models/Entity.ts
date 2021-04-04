@@ -1,7 +1,4 @@
 export interface Entity {
-  /** The entity's id */
-  id: string;
-
   /** @flag */
   _deleted?: boolean;
   /** @flag */
