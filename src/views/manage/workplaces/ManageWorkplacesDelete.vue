@@ -1,58 +1,42 @@
 <template>
   <div :data-vue-component="$options.name">
-    <div class="modal-card">
-      <header class="modal-card-head">
-        <p class="modal-card-title">
-          Remove workplace
-        </p>
+    <form method="POST" @submit.prevent="removeWorkplace">
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">
+            Remove workplace
+          </p>
 
-        <button class="delete" @click="() => $emit('close')" />
-      </header>
+          <button class="delete" @click="() => $emit('close')" />
+        </header>
 
-      <section class="modal-card-body">
-        <p>
-          Are you sure you want to remove this workplace? <br />
-          Any shifts assigned to this workplace will be unassigned.
-        </p>
+        <section class="modal-card-body">
+          <h1 class="title">
+            {{ workplace.name }}
+          </h1>
 
-        <hr />
+          <hr />
 
-        <b-field label="Name">
-          <b-input
-            v-model="workplace.name"
-            type="text"
-            placeholder="Workplace name"
-            readonly
-            icon="user"
-          />
-        </b-field>
+          <h3 class="subtitle">
+            Are you sure you want to remove this workplace? <br />
+            You will not be able to assign shifts to it anymore.
+          </h3>
+        </section>
 
-        <b-field label="Address">
-          <b-input
-            v-model="workplace.address"
-            type="text"
-            placeholder="Workplace address"
-            readonly
-            icon="location-arrow"
-          />
-        </b-field>
+        <footer class="modal-card-foot">
+          <b-button label="Cancel" @click="$emit('close')" />
 
-        <b-field label="Description">
-          <b-input
-            v-model="workplace.description"
-            type="textarea"
-            placeholder="Workplace description"
-            readonly
-          />
-        </b-field>
-      </section>
-
-      <footer class="modal-card-foot">
-        <b-button label="Cancel" @click="$emit('close')" />
-
-        <b-button type="is-danger" label="Remove workplace" @click="removeWorkplace" />
-      </footer>
-    </div>
+          <button
+            type="submit"
+            class="button is-danger"
+            :class="{ 'is-loading': loading }"
+            :disabled="loading"
+          >
+            Remove workplace
+          </button>
+        </footer>
+      </div>
+    </form>
   </div>
 </template>
 
@@ -72,22 +56,17 @@ export default Vue.extend({
     },
   },
 
+  data() {
+    return {
+      loading: false,
+    };
+  },
+
   methods: {
-    async removeWorkplace() {
-      try {
-        await this.$store.dispatch('manage/workplaces/removeWorkplace', this.workplace.id);
-      } catch (error) {
-        console.error(error);
+    removeWorkplace() {
+      this.loading = true;
 
-        return;
-      }
-
-      this.$buefy.toast.open({
-        message: 'Workplace removed successfully',
-        type: 'is-danger',
-      });
-
-      this.$emit('close');
+      this.$emit('remove');
     },
   },
 });

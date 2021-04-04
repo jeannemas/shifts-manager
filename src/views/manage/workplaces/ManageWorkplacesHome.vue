@@ -6,61 +6,67 @@
           My workplaces
         </h1>
 
-        <b-button icon-left="plus" label="Add workplace" @click.prevent="addWorkplace" />
+        <div class="block">
+          <b-button icon-left="plus" label="Add workplace" @click.prevent="addWorkplace" />
+        </div>
 
-        <b-table :data="workplaces" detailed detail-key="id">
-          <b-table-column field="name" label="Name">
-            <template #header>
-              <b-icon icon="building" />
+        <div class="block">
+          <div v-if="workplaces.length" class="columns is-multiline">
+            <div v-for="(workplace, index) in workplaces" :key="index" class="column is-4">
+              <div class="card">
+                <header class="card-header">
+                  <p class="card-header-title">
+                    {{ workplace.name }}
+                  </p>
+                </header>
 
-              <span>
-                Name
-              </span>
-            </template>
+                <div class="card-content">
+                  <div class="content">
+                    <b-field label="Address">
+                      {{ workplace.address || 'None' }}
+                    </b-field>
 
-            <template #default="props">
-              {{ props.row.name }}
-            </template>
-          </b-table-column>
-
-          <b-table-column field="address" label="Address">
-            <template #header>
-              <b-icon icon="location-arrow" />
-
-              <span>
-                Address
-              </span>
-            </template>
-
-            <template #default="props">
-              {{ props.row.address }}
-            </template>
-          </b-table-column>
-
-          <template #detail="props">
-            <div class="columns">
-              <div class="column">
-                <p>
-                  {{ props.row.description }}
-                </p>
-              </div>
-
-              <div class="column is-narrow">
-                <div class="buttons">
-                  <b-button icon-left="edit" @click="() => editWorkplace(props.row)" />
-
-                  <b-button icon-left="trash" @click="() => removeWorkplace(props.row)" />
+                    <b-field label="Description">
+                      {{ workplace.description || 'None' }}
+                    </b-field>
+                  </div>
                 </div>
+
+                <footer class="card-footer">
+                  <a
+                    href="#"
+                    class="card-footer-item"
+                    @click.prevent="() => editWorkplace(workplace)"
+                  >
+                    <b-icon icon="edit" />
+
+                    <span>
+                      Edit
+                    </span>
+                  </a>
+
+                  <a
+                    href="#"
+                    class="card-footer-item"
+                    @click.prevent="() => removeWorkplace(workplace)"
+                  >
+                    <b-icon icon="trash" />
+
+                    <span>
+                      Delete
+                    </span>
+                  </a>
+                </footer>
               </div>
             </div>
-          </template>
+          </div>
 
-          <template #empty>
+          <div v-else>
             <h3 class="subtitle has-text-centered">
               You do not have any workplace
             </h3>
-          </template>
-        </b-table>
+          </div>
+        </div>
       </div>
     </section>
   </div>
@@ -90,32 +96,101 @@ export default Vue.extend({
   },
 
   methods: {
-    async addWorkplace() {
-      this.$buefy.modal.open({
+    addWorkplace() {
+      const modal = this.$buefy.modal.open({
         parent: this,
         component: NewWorkplace,
         hasModalCard: true,
         trapFocus: true,
+        events: {
+          add: async ({ name, address, description }: Workplace) => {
+            try {
+              await this.$store.dispatch('manage/workplaces/addWorkplace', {
+                name,
+                address,
+                description,
+              });
+            } catch (error) {
+              console.error(error);
+
+              modal.$data.loading = false;
+
+              return;
+            }
+
+            this.$buefy.toast.open({
+              message: 'Workplace added successfully',
+              type: 'is-success',
+            });
+
+            modal.close();
+          },
+        },
       });
     },
 
-    async editWorkplace(workplace: Workplace) {
-      this.$buefy.modal.open({
+    editWorkplace(workplace: Workplace) {
+      const modal = this.$buefy.modal.open({
         parent: this,
         component: EditWorkplace,
         props: { workplace },
         hasModalCard: true,
         trapFocus: true,
+        events: {
+          save: async ({ name, address, description }: Workplace) => {
+            try {
+              await this.$store.dispatch('manage/workplaces/saveWorkplace', {
+                id: workplace.id,
+                name,
+                address,
+                description,
+              });
+            } catch (error) {
+              console.error(error);
+
+              modal.$data.loading = false;
+
+              return;
+            }
+
+            this.$buefy.toast.open({
+              message: 'Workplace saved successfully',
+              type: 'is-success',
+            });
+
+            modal.close();
+          },
+        },
       });
     },
 
-    async removeWorkplace(workplace: Workplace) {
-      this.$buefy.modal.open({
+    removeWorkplace(workplace: Workplace) {
+      const modal = this.$buefy.modal.open({
         parent: this,
         component: RemoveWorkplace,
         props: { workplace },
         hasModalCard: true,
         trapFocus: true,
+        events: {
+          remove: async () => {
+            try {
+              await this.$store.dispatch('manage/workplaces/removeWorkplace', workplace.id);
+            } catch (error) {
+              console.error(error);
+
+              modal.$data.loading = false;
+
+              return;
+            }
+
+            this.$buefy.toast.open({
+              message: 'Workplace removed successfully',
+              type: 'is-danger',
+            });
+
+            modal.close();
+          },
+        },
       });
     },
   },

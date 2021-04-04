@@ -13,7 +13,7 @@
         <section class="modal-card-body">
           <b-field label="Name">
             <b-input
-              v-model="workplace.name"
+              v-model="workplaceName"
               type="text"
               name="name"
               placeholder="Workplace name"
@@ -24,7 +24,7 @@
 
           <b-field label="Address">
             <b-input
-              v-model="workplace.address"
+              v-model="workplaceAddress"
               type="text"
               name="address"
               placeholder="Workplace address"
@@ -34,7 +34,7 @@
 
           <b-field label="Description">
             <b-input
-              v-model="workplace.description"
+              v-model="workplaceDescription"
               type="textarea"
               placeholder="Workplace description"
               maxlength="256"
@@ -46,7 +46,12 @@
         <footer class="modal-card-foot">
           <b-button label="Cancel" @click="() => $emit('close')" />
 
-          <button type="submit" class="button is-primary">
+          <button
+            type="submit"
+            class="button is-primary"
+            :class="{ 'is-loading': loading }"
+            :disabled="loading || !workplaceIsValid"
+          >
             Save workplace
           </button>
         </footer>
@@ -66,30 +71,33 @@ export default Vue.extend({
 
   data() {
     return {
-      workplace: {
-        name: null as string | null,
-        address: null as string | null,
-        description: null as string | null,
-      } as Workplace,
+      /** The new workplace name */
+      workplaceName: null as Workplace['name'] | null,
+      /** The new workplace address, if any */
+      workplaceAddress: null as Workplace['address'],
+      /** The new workplace description */
+      workplaceDescription: null as Workplace['description'],
+
+      loading: false,
     };
   },
 
+  computed: {
+    /** Whether or not the new workplace is valid */
+    workplaceIsValid(): boolean {
+      return !!this.workplaceName;
+    },
+  },
+
   methods: {
-    async addWorkplace() {
-      try {
-        await this.$store.dispatch('manage/workplaces/addWorkplace', this.workplace);
-      } catch (error) {
-        console.error(error);
+    addWorkplace() {
+      this.loading = true;
 
-        return;
-      }
-
-      this.$buefy.toast.open({
-        message: 'Workplace added successfully',
-        type: 'is-success',
+      this.$emit('add', {
+        name: this.workplaceName,
+        address: this.workplaceAddress,
+        description: this.workplaceDescription,
       });
-
-      this.$emit('close');
     },
   },
 });

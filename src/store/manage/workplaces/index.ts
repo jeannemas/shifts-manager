@@ -1,16 +1,18 @@
 import firebase from 'firebase/app';
 import Vue from 'vue';
 
-import { Module } from 'vuex';
+import FirestoreWrapper from '@/helpers';
 
 // Models
 import { Workplace } from '@/models/Workplace';
 
-export interface ManageWorkplacesModule {
+export interface ManageWorkplacesState {
   workplaces: Workplace[];
 }
 
-const module: Module<ManageWorkplacesModule, Record<string, unknown>> = {
+type ManageWorkplacesModule = import('vuex').Module<ManageWorkplacesState, Record<string, unknown>>;
+
+const module: ManageWorkplacesModule = {
   namespaced: true,
 
   state: {
@@ -26,119 +28,86 @@ const module: Module<ManageWorkplacesModule, Record<string, unknown>> = {
       const currentUser = rootGetters['auth/currentUser'];
 
       if (!currentUser) {
-        return Promise.reject(new Error('User is not logged in'));
+        throw new Error('User is not logged in');
       }
 
-      const unsubscribe = firebase
-        .firestore()
-        .collection('users')
-        .doc(currentUser.uid)
+      return FirestoreWrapper(currentUser.uid)
+        .user()
         .collection('workplaces')
         .onSnapshot((snapshot) =>
           snapshot.docChanges().forEach((change) => {
+            const { id } = change.doc;
+            const payload = change.doc.data();
+
+            // eslint-disable-next-line no-underscore-dangle
+            if (payload?._deleted) {
+              // The doc has the deleted flag
+              commit('REMOVE_WORKPLACE', id);
+
+              return;
+            }
+
             if (change.type === 'removed') {
-              commit('REMOVE_WORKPLACE', change.doc.id);
+              commit('REMOVE_WORKPLACE', id);
             } else {
-              commit('SET_WORKPLACE', { id: change.doc.id, ...change.doc.data() });
+              commit('SET_WORKPLACE', { id, ...payload });
             }
           }),
         );
-
-      return Promise.resolve(unsubscribe);
     },
 
-    async addWorkplace(
-      { rootGetters },
-      { name, address = null, description = null }: Omit<Workplace, 'id'>,
-    ): Promise<void> {
+    async addWorkplace({ rootGetters }, workplace: Workplace): Promise<void> {
+      const { name, address, description } = workplace;
       const currentUser = rootGetters['auth/currentUser'];
 
       if (!currentUser) {
-        return Promise.reject(new Error('User is not logged in'));
+        throw new Error('User is not logged in');
       }
 
-      try {
-        await firebase
-          .firestore()
-          .collection('users')
-          .doc(currentUser.uid)
-          .collection('workplaces')
-          .doc()
-          .set({ name, address, description } as Omit<Workplace, 'id'>);
-      } catch (error) {
-        return Promise.reject(error);
-      }
+      const timestamp = Date.now();
 
-      return Promise.resolve();
+      await FirestoreWrapper(currentUser.uid)
+        .workplace()
+        .set({
+          name,
+          address,
+          description,
+          _createdAt: timestamp,
+          _updatedAt: timestamp,
+        });
     },
 
-    async saveWorkplace(
-      { rootGetters },
-      { id, name, address = null, description = null }: Workplace,
-    ): Promise<void> {
+    async saveWorkplace({ rootGetters }, workplace: Workplace): Promise<void> {
+      const { id, name, address, description } = workplace;
       const currentUser = rootGetters['auth/currentUser'];
 
       if (!currentUser) {
-        return Promise.reject(new Error('User is not logged in'));
+        throw new Error('User is not logged in');
       }
 
-      try {
-        await firebase
-          .firestore()
-          .collection('users')
-          .doc(currentUser.uid)
-          .collection('workplaces')
-          .doc(id)
-          .update({ name, address, description } as Omit<Workplace, 'id'>);
-      } catch (error) {
-        return Promise.reject(error);
-      }
-
-      return Promise.resolve();
+      await FirestoreWrapper(currentUser.uid)
+        .workplace(id)
+        .update({
+          name,
+          address,
+          description,
+          _updatedAt: Date.now(),
+        });
     },
 
     async removeWorkplace({ rootGetters }, workplaceId: Workplace['id']): Promise<void> {
       const currentUser = rootGetters['auth/currentUser'];
 
       if (!currentUser) {
-        return Promise.reject(new Error('User is not logged in'));
+        throw new Error('User is not logged in');
       }
 
-      try {
-        const db = firebase.firestore();
-        const affectedShifts = await db
-          .collection('users')
-          .doc(currentUser.uid)
-          .collection('shifts')
-          .where('workplaceId', '==', workplaceId)
-          .get();
-        const batchCount = Math.ceil(affectedShifts.size / 500);
-        const batches: Promise<unknown>[] = [];
-
-        for (let i = 0; i < batchCount; i += 1) {
-          const batch = db.batch();
-
-          affectedShifts.docs.splice(500 * i, 500).forEach((doc) => {
-            batch.update(doc.ref, { workplaceId: null });
-          });
-
-          batches.push(batch.commit());
-        }
-
-        await Promise.all([
-          ...batches,
-          db
-            .collection('users')
-            .doc(currentUser.uid)
-            .collection('workplaces')
-            .doc(workplaceId)
-            .delete(),
-        ]);
-      } catch (error) {
-        return Promise.reject(error);
-      }
-
-      return Promise.resolve();
+      FirestoreWrapper(currentUser.uid)
+        .workplace(workplaceId)
+        .update({
+          _deleted: true,
+          _updatedAt: Date.now(),
+        });
     },
   },
 
@@ -158,9 +127,7 @@ const module: Module<ManageWorkplacesModule, Record<string, unknown>> = {
     REMOVE_WORKPLACE({ workplaces }, workplaceId: Workplace['id']) {
       const index = workplaces.findIndex(({ id }) => id === workplaceId);
 
-      if (index < 0) {
-        console.error(`Workplace '${workplaceId}' does not exist, cannot remove it`);
-      } else {
+      if (index >= 0) {
         workplaces.splice(index, 1);
       }
     },

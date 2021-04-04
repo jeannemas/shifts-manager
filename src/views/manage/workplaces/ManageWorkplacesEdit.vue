@@ -13,7 +13,7 @@
         <section class="modal-card-body">
           <b-field label="Name">
             <b-input
-              v-model="workplace.name"
+              v-model="workplaceName"
               type="text"
               name="name"
               placeholder="Workplace name"
@@ -24,7 +24,7 @@
 
           <b-field label="Address">
             <b-input
-              v-model="workplace.address"
+              v-model="workplaceAddress"
               type="text"
               name="address"
               placeholder="Workplace address"
@@ -34,7 +34,7 @@
 
           <b-field label="Description">
             <b-input
-              v-model="workplace.description"
+              v-model="workplaceDescription"
               type="textarea"
               placeholder="Workplace description"
               maxlength="256"
@@ -46,7 +46,12 @@
         <footer class="modal-card-foot">
           <b-button label="Cancel" @click="() => $emit('close')" />
 
-          <button type="submit" class="button is-primary">
+          <button
+            type="submit"
+            class="button is-primary"
+            :class="{ 'is-loading': loading }"
+            :disabled="loading || !workplaceIsValid"
+          >
             Save workplace
           </button>
         </footer>
@@ -71,22 +76,34 @@ export default Vue.extend({
     },
   },
 
+  data() {
+    return {
+      /** The workplace name */
+      workplaceName: this.workplace.name,
+      /** The workplace address, if any */
+      workplaceAddress: this.workplace.address,
+      /** The workplace description */
+      workplaceDescription: this.workplace.description,
+
+      loading: false,
+    };
+  },
+
+  computed: {
+    workplaceIsValid(): boolean {
+      return !!this.workplaceName;
+    },
+  },
+
   methods: {
-    async saveWorkplace() {
-      try {
-        await this.$store.dispatch('manage/workplaces/saveWorkplace', this.workplace);
-      } catch (error) {
-        console.error(error);
+    saveWorkplace() {
+      this.loading = true;
 
-        return;
-      }
-
-      this.$buefy.toast.open({
-        message: 'Workplace saved successfully',
-        type: 'is-success',
+      this.$emit('save', {
+        name: this.workplaceName,
+        address: this.workplaceAddress,
+        description: this.workplaceDescription,
       });
-
-      this.$emit('close');
     },
   },
 });
