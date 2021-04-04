@@ -6,7 +6,7 @@
           Log shift
         </h1>
 
-        <shift-editor :shift="shift" @shift-saved="shiftCreated" />
+        <shift-editor :shift="shift" @save="save" />
       </div>
     </section>
   </div>
@@ -14,9 +14,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-
-// Models
-import { Shift } from '@/models/Shift';
 
 // Components
 import ShiftEditor from './ShiftEditor.vue';
@@ -31,13 +28,12 @@ export default Vue.extend({
   data() {
     return {
       shift: {
-        id: null,
-        workplace: null,
+        workplaceId: null,
         startTime: null,
         endTime: null,
         title: null,
         description: null,
-      } as Shift,
+      },
     };
   },
 
@@ -46,7 +42,15 @@ export default Vue.extend({
   },
 
   methods: {
-    shiftCreated() {
+    async save() {
+      try {
+        await this.$store.dispatch('shifts/addShift', this.shift);
+      } catch (error) {
+        console.error(error);
+
+        return;
+      }
+
       this.$buefy.toast.open({
         message: 'Shift added successfully',
         type: 'is-success',

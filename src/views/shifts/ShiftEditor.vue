@@ -1,21 +1,16 @@
 <template>
   <div :data-vue-component="$options.name">
-    <form method="POST" class="box" @submit.prevent="saveShift">
-      <b-field label="Workplace" grouped group-multiline>
-        <b-select v-model="workplaceId" placeholder="None selected" expanded>
+    <form method="POST" class="box" @submit.prevent="() => $emit('save', shift)">
+      <b-field label="Workplace">
+        <b-select v-model="shift.workplaceId" placeholder="None selected" expanded>
+          <option :value="null">
+            None selected
+          </option>
+
           <option v-for="(workplace, index) in workplaces" :key="index" :value="workplace.id">
             {{ workplace.name }}
           </option>
         </b-select>
-
-        <div class="control">
-          <b-button
-            icon-left="times"
-            :disabled="!workplaceId"
-            title="Reset workplace"
-            @click="() => (workplaceId = null)"
-          />
-        </div>
       </b-field>
 
       <div class="columns">
@@ -103,11 +98,9 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue';
 import { mapGetters } from 'vuex';
-import firebase from 'firebase/app';
 
 // Models
 import { Shift } from '@/models/Shift';
-import { Workplace } from '@/models/Workplace';
 
 export default Vue.extend({
   name: 'ShiftEditor',
@@ -117,12 +110,6 @@ export default Vue.extend({
       type: Object as PropType<Shift>,
       required: true,
     },
-  },
-
-  data() {
-    return {
-      workplaceId: this.shift.workplace?.id || null,
-    };
   },
 
   computed: {
@@ -158,46 +145,6 @@ export default Vue.extend({
       workplaces: 'manage/workplaces/workplaces',
       currentUser: 'auth/currentUser',
     }),
-  },
-
-  mounted() {
-    this.$nextTick(() => {
-      this.workplaceId = this.shift.workplace?.id || null;
-    });
-  },
-
-  methods: {
-    async saveShift() {
-      try {
-        if (this.shift.id) {
-          // It's an update
-
-          await this.$store.dispatch('shifts/saveShift', this.shift);
-        } else {
-          // It's a new shift
-
-          await this.$store.dispatch('shifts/addShift', {
-            ...this.shift,
-            workplace: this.workplaceId ? this.getWorkplaceRef(this.workplaceId) : null,
-          } as Shift);
-        }
-      } catch (error) {
-        console.error(error);
-
-        return;
-      }
-
-      this.$emit('shift-saved');
-    },
-
-    getWorkplaceRef(workplaceId: Workplace['id']) {
-      return firebase
-        .firestore()
-        .collection('users')
-        .doc(this.currentUser.uid)
-        .collection('workplaces')
-        .doc(workplaceId);
-    },
   },
 });
 </script>

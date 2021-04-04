@@ -1,16 +1,18 @@
-import firebase from 'firebase/app';
 import Vue from 'vue';
 
-import { Module } from 'vuex';
+import FirestoreWrapper from '@/helpers';
 
 // Models
 import { Shift } from '@/models/Shift';
+import { RetrievableEntity } from '@/models/RetrievableEntity';
 
-export interface ShiftsModule {
-  shifts: Shift[];
+export interface ShiftsState {
+  shifts: RetrievableEntity<Shift>[];
 }
 
-const module: Module<ShiftsModule, Record<string, unknown>> = {
+type ShiftsModule = import('vuex').Module<ShiftsState, Record<string, unknown>>;
+
+const module: ShiftsModule = {
   namespaced: true,
 
   state: {
@@ -26,102 +28,95 @@ const module: Module<ShiftsModule, Record<string, unknown>> = {
       const currentUser = rootGetters['auth/currentUser'];
 
       if (!currentUser) {
-        return Promise.reject(new Error('User is not logged in'));
+        throw new Error('User is not logged in');
       }
 
-      const unsubscribe = firebase
-        .firestore()
-        .collection('users')
-        .doc(currentUser.uid)
+      return FirestoreWrapper(currentUser.uid)
+        .user()
         .collection('shifts')
         .onSnapshot((snapshot) =>
           snapshot.docChanges().forEach((change) => {
+            const { id } = change.doc;
+            const payload = change.doc.data();
+
+            // eslint-disable-next-line no-underscore-dangle
+            if (payload?._deleted) {
+              // The doc has the deleted flag
+              commit('REMOVE_SHIFT', id);
+
+              return;
+            }
+
             if (change.type === 'removed') {
-              commit('REMOVE_SHIFT', change.doc.id);
+              commit('REMOVE_SHIFT', id);
             } else {
-              commit('SET_SHIFT', { id: change.doc.id, ...change.doc.data() });
+              commit('SET_SHIFT', { id, ...payload });
             }
           }),
         );
-
-      return Promise.resolve(unsubscribe);
     },
 
-    async addShift(
-      { rootGetters },
-      { workplace = null, startTime, endTime = null, title, description = null }: Omit<Shift, 'id'>,
-    ): Promise<void> {
+    async addShift({ rootGetters }, shift: Shift): Promise<void> {
+      const { workplaceId, startTime, endTime, title, description } = shift;
       const currentUser = rootGetters['auth/currentUser'];
 
       if (!currentUser) {
-        return Promise.reject(new Error('User is not logged in'));
+        throw new Error('User is not logged in');
       }
 
-      try {
-        await firebase
-          .firestore()
-          .collection('users')
-          .doc(currentUser.uid)
-          .collection('shifts')
-          .doc()
-          .set({ workplace, startTime, endTime, title, description } as Omit<Shift, 'id'>);
-      } catch (error) {
-        return Promise.reject(error);
-      }
+      const timestamp = Date.now();
 
-      return Promise.resolve();
+      await FirestoreWrapper(currentUser.uid)
+        .shift()
+        .set({
+          workplaceId,
+          startTime,
+          endTime,
+          title,
+          description,
+          _createdAt: timestamp,
+          _updatedAt: timestamp,
+        });
     },
 
-    async saveShift(
-      { rootGetters },
-      { id, workplace = null, startTime, endTime = null, title, description = null }: Shift,
-    ): Promise<void> {
+    async saveShift({ rootGetters }, shift: RetrievableEntity<Shift>): Promise<void> {
+      const { id, workplaceId, startTime, endTime, title, description } = shift;
       const currentUser = rootGetters['auth/currentUser'];
 
       if (!currentUser) {
-        return Promise.reject(new Error('User is not logged in'));
+        throw new Error('User is not logged in');
       }
 
-      try {
-        await firebase
-          .firestore()
-          .collection('users')
-          .doc(currentUser.uid)
-          .collection('shifts')
-          .doc(id as string)
-          .update({ workplace, startTime, endTime, title, description } as Omit<Shift, 'id'>);
-      } catch (error) {
-        return Promise.reject(error);
-      }
-
-      return Promise.resolve();
+      await FirestoreWrapper(currentUser.uid)
+        .shift(id)
+        .update({
+          workplaceId,
+          startTime,
+          endTime,
+          title,
+          description,
+          _updatedAt: Date.now(),
+        });
     },
 
-    async removeShift({ rootGetters }, shiftId: NonNullable<Shift['id']>): Promise<void> {
+    async removeShift({ rootGetters }, shiftId: RetrievableEntity<Shift>['id']): Promise<void> {
       const currentUser = rootGetters['auth/currentUser'];
 
       if (!currentUser) {
-        return Promise.reject(new Error('User is not logged in'));
+        throw new Error('User is not logged in');
       }
 
-      try {
-        await firebase
-          .firestore()
-          .collection('users')
-          .doc(currentUser.uid)
-          .collection('shifts')
-          .doc(shiftId)
-          .delete();
-      } catch (error) {
-        return Promise.reject(error);
-      }
-
-      return Promise.resolve();
+      await FirestoreWrapper(currentUser.uid)
+        .shift(shiftId)
+        .update({
+          _deleted: true,
+          _updatedAt: Date.now(),
+        });
     },
   },
 
   mutations: {
-    SET_SHIFT({ shifts }, shift: Shift) {
+    SET_SHIFT({ shifts }, shift: RetrievableEntity<Shift>) {
       const index = shifts.findIndex(({ id }) => id === shift.id);
 
       if (index < 0) {
@@ -133,12 +128,10 @@ const module: Module<ShiftsModule, Record<string, unknown>> = {
       }
     },
 
-    REMOVE_SHIFT({ shifts }, shiftId: Shift['id']) {
+    REMOVE_SHIFT({ shifts }, shiftId: RetrievableEntity<Shift>['id']) {
       const index = shifts.findIndex(({ id }) => id === shiftId);
 
-      if (index < 0) {
-        console.error(`Shift '${shiftId}' does not exist, cannot remove it`);
-      } else {
+      if (index >= 0) {
         shifts.splice(index, 1);
       }
     },

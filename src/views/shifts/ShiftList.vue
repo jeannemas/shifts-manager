@@ -11,7 +11,7 @@
         </template>
 
         <template #default="props">
-          {{ findWorkplaceById(props.row.workplace.id).name }}
+          {{ (findWorkplaceById(props.row.workplaceId) || {}).name || 'None' }}
         </template>
       </b-table-column>
 
@@ -93,6 +93,7 @@ import prettyMs from 'pretty-ms';
 // Models
 import { Shift } from '@/models/Shift';
 import { Workplace } from '@/models/Workplace';
+import { RetrievableEntity } from '@/models/RetrievableEntity';
 
 export default Vue.extend({
   name: 'ShiftList',
@@ -109,23 +110,27 @@ export default Vue.extend({
     }),
 
     finishedShifts(): Shift[] {
-      return (this.shifts as Shift[])
+      const shifts = this.shifts as RetrievableEntity<Shift>[];
+
+      return shifts
         .filter(({ endTime }) => endTime)
-        .sort(({ startTime: a }, { startTime: b }) => (b as number) - (a as number));
+        .sort(({ startTime: a }, { startTime: b }) => b - a);
     },
 
     unfinishedShifts(): Shift[] {
-      return (this.shifts as Shift[])
-        .filter(({ endTime }) => !endTime)
-        .sort(({ startTime: a }, { startTime: b }) => (b as number) - (a as number));
-    },
+      const shifts = this.shifts as RetrievableEntity<Shift>[];
 
-    time: () => Date.now(),
+      return shifts
+        .filter(({ endTime }) => !endTime)
+        .sort(({ startTime: a }, { startTime: b }) => b - a);
+    },
   },
 
   methods: {
-    findWorkplaceById(workplaceId: Workplace['id']): Workplace {
-      return this.workplaces.find(({ id }: Workplace) => id === workplaceId) || {};
+    findWorkplaceById(workplaceId: RetrievableEntity<Workplace>['id']): Workplace | undefined {
+      const workplaces = this.workplaces as RetrievableEntity<Workplace>[];
+
+      return workplaces.find(({ id }) => id === workplaceId);
     },
 
     finish(shift: Shift) {

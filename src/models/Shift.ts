@@ -1,15 +1,20 @@
-import firebase from 'firebase/app';
+import { Entity } from './Entity';
+import { RetrievableEntity } from './RetrievableEntity';
+import { Workplace } from './Workplace';
 
-export interface Shift {
-  id: string | null;
+export interface Shift extends Entity {
+  /** The shift's workplace id, if any */
+  workplaceId: RetrievableEntity<Workplace>['id'] | null;
 
-  workplace: firebase.firestore.DocumentReference<firebase.firestore.DocumentData> | null;
+  /** The shift's start time */
+  startTime: number;
 
-  startTime: number | null;
-
+  /** The shift's end time, if any */
   endTime: number | null;
 
-  title: string | null;
+  /** The shift's title */
+  title: string;
 
+  /** The shift's description, if any */
   description: string | null;
 }

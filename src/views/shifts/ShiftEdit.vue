@@ -6,7 +6,7 @@
           Update shift
         </h1>
 
-        <shift-editor :shift="shift" @shift-saved="shiftUpdated" />
+        <shift-editor v-if="shift" :shift="shift" @save="save" />
       </div>
     </section>
   </div>
@@ -18,6 +18,7 @@ import { mapGetters } from 'vuex';
 
 // Models
 import { Shift } from '@/models/Shift';
+import { RetrievableEntity } from '@/models/RetrievableEntity';
 
 // Components
 import ShiftEditor from './ShiftEditor.vue';
@@ -31,21 +32,14 @@ export default Vue.extend({
 
   props: {
     shiftId: {
-      type: String as PropType<Shift['id']>,
+      type: String as PropType<RetrievableEntity<Shift>['id']>,
       required: true,
     },
   },
 
   data() {
     return {
-      shift: {
-        id: null,
-        workplace: null,
-        startTime: null,
-        endTime: null,
-        title: null,
-        description: null,
-      } as Shift,
+      shift: null as RetrievableEntity<Shift> | null,
     };
   },
 
@@ -58,10 +52,11 @@ export default Vue.extend({
   },
 
   async mounted() {
-    const shift = (this.shifts as Shift[]).find(({ id }) => id === this.shiftId);
+    const shifts = this.shifts as RetrievableEntity<Shift>[];
+    const shift = shifts.find(({ id }) => id === this.shiftId);
 
     if (!shift) {
-      await this.$buefy.dialog.alert({
+      this.$buefy.dialog.alert({
         message: 'This shift does not exist',
         type: 'is-danger',
       });
@@ -75,7 +70,15 @@ export default Vue.extend({
   },
 
   methods: {
-    shiftUpdated() {
+    async save() {
+      try {
+        await this.$store.dispatch('shifts/saveShift', this.shift);
+      } catch (error) {
+        console.error(error);
+
+        return;
+      }
+
       this.$buefy.toast.open({
         message: 'Shift updated successfully',
         type: 'is-success',
