@@ -1,12 +1,21 @@
 import firebase from 'firebase/app';
 
-import { Module } from 'vuex';
+import { FirestoreWrapper, getUserLocale } from '@/helpers';
 
-export interface AuthModule {
+interface SignUp {
+  displayName: string;
+  email: string;
+  password: string;
+}
+type LogIn = Pick<SignUp, 'email' | 'password'>;
+
+export interface AuthState {
   currentUser: firebase.User | null;
 }
 
-const module: Module<AuthModule, Record<string, unknown>> = {
+type AuthModule = import('vuex').Module<AuthState, Record<string, unknown>>;
+
+const module: AuthModule = {
   namespaced: true,
 
   state: {
@@ -18,49 +27,28 @@ const module: Module<AuthModule, Record<string, unknown>> = {
   },
 
   actions: {
-    async signup(
-      context,
-      { name: displayName, email, password }: { name: string; email: string; password: string },
-    ): Promise<void> {
-      const auth = firebase.auth();
+    async signup(context, { displayName, email, password }: SignUp): Promise<void> {
+      const { user } = await firebase.auth().createUserWithEmailAndPassword(email, password);
 
-      try {
-        const { user } = await auth.createUserWithEmailAndPassword(email, password);
-
-        if (!user) {
-          throw new Error('User not created');
-        }
-
-        await user.updateProfile({ displayName });
-      } catch (error) {
-        return Promise.reject(error);
+      if (!user) {
+        throw new Error('User not created');
       }
 
-      return Promise.resolve();
+      await user.updateProfile({ displayName });
+
+      await FirestoreWrapper(user.uid)
+        .user()
+        .set({
+          language: getUserLocale(),
+        });
     },
 
-    async login(context, { email, password }: { email: string; password: string }): Promise<void> {
-      const auth = firebase.auth();
-
-      try {
-        await auth.signInWithEmailAndPassword(email, password);
-      } catch (error) {
-        return Promise.reject(error);
-      }
-
-      return Promise.resolve();
+    async login(context, { email, password }: LogIn): Promise<void> {
+      await firebase.auth().signInWithEmailAndPassword(email, password);
     },
 
     async signout(): Promise<void> {
-      const auth = firebase.auth();
-
-      try {
-        await auth.signOut();
-      } catch (error) {
-        return Promise.reject(error);
-      }
-
-      return Promise.resolve();
+      await firebase.auth().signOut();
     },
   },
 

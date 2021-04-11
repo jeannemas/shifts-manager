@@ -8,7 +8,7 @@
               <form ref="form" class="box" method="POST" @submit.prevent="signup">
                 <b-field label="Name">
                   <b-input
-                    v-model="form.name"
+                    v-model="form.displayName"
                     type="text"
                     name="name"
                     placeholder="John Doe"
@@ -71,7 +71,7 @@ export default Vue.extend({
   data() {
     return {
       form: {
-        name: null as string | null,
+        displayName: null as string | null,
         email: null as string | null,
         password: null as string | null,
       },

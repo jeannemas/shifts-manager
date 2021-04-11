@@ -1,6 +1,6 @@
 import Vue from 'vue';
 
-import FirestoreWrapper from '@/helpers';
+import { FirestoreWrapper } from '@/helpers';
 
 // Models
 import { Workplace } from '@/models/Workplace';
