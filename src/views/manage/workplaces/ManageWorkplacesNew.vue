@@ -4,39 +4,39 @@
       <div class="modal-card">
         <header class="modal-card-head">
           <p class="modal-card-title">
-            Add workplace
+            {{ $t('VIEWS.MANAGE.WORKPLACES.NEW.TITLE') }}
           </p>
 
           <button class="delete" @click="() => $emit('close')" />
         </header>
 
         <section class="modal-card-body">
-          <b-field label="Name">
+          <b-field :label="$t('VIEWS.MANAGE.WORKPLACES.FIELDS.NAME.LABEL')">
             <b-input
               v-model="workplaceName"
               type="text"
               name="name"
-              placeholder="Workplace name"
+              :placeholder="$t('VIEWS.MANAGE.WORKPLACES.FIELDS.NAME.PLACEHOLDER')"
               required
               icon="user"
             />
           </b-field>
 
-          <b-field label="Address">
+          <b-field :label="$t('VIEWS.MANAGE.WORKPLACES.FIELDS.ADDRESS.LABEL')">
             <b-input
               v-model="workplaceAddress"
               type="text"
               name="address"
-              placeholder="Workplace address"
+              :placeholder="$t('VIEWS.MANAGE.WORKPLACES.FIELDS.ADDRESS.PLACEHOLDER')"
               icon="location-arrow"
             />
           </b-field>
 
-          <b-field label="Description">
+          <b-field :label="$t('VIEWS.MANAGE.WORKPLACES.FIELDS.DESCRIPTION.LABEL')">
             <b-input
               v-model="workplaceDescription"
               type="textarea"
-              placeholder="Workplace description"
+              :placeholder="$t('VIEWS.MANAGE.WORKPLACES.FIELDS.DESCRIPTION.PLACEHOLDER')"
               maxlength="256"
               has-counter
             />
@@ -44,7 +44,7 @@
         </section>
 
         <footer class="modal-card-foot">
-          <b-button label="Cancel" @click="() => $emit('close')" />
+          <b-button :label="$t('MISC.ACTIONS.CANCEL')" @click="() => $emit('close')" />
 
           <button
             type="submit"
@@ -52,7 +52,7 @@
             :class="{ 'is-loading': loading }"
             :disabled="loading || !workplaceIsValid"
           >
-            Save workplace
+            {{ $t('VIEWS.MANAGE.WORKPLACES.NEW.SAVE_WORKPLACE_BTN') }}
           </button>
         </footer>
       </div>

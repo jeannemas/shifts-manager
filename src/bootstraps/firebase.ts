@@ -16,7 +16,7 @@ firebase.initializeApp({
 const modules = {
   list: {} as Record<string, () => void>,
 
-  async sync(maps: Record<string, () => void>): Promise<void> {
+  async sync(maps: Record<string, (actionName: string) => void>): Promise<unknown[]> {
     const list: Promise<unknown>[] = [];
 
     // eslint-disable-next-line no-restricted-syntax
@@ -33,15 +33,15 @@ const modules = {
       list.push(dispatch);
       this.list[action] = await dispatch;
 
-      callback.call(null);
+      callback.call(null, action);
     }
 
-    await Promise.all(list);
+    return Promise.all(list);
   },
 };
 
 firebase.auth().onAuthStateChanged(async (user) => {
-  store.commit('auth/SET_USER', user);
+  await store.dispatch('auth/setUser', user);
 
   try {
     if (user) {

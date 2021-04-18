@@ -3,11 +3,15 @@
     <section class="section">
       <div class="container">
         <h1 class="title">
-          My workplaces
+          {{ $t('VIEWS.MANAGE.WORKPLACES.PAGE_TITLE') }}
         </h1>
 
         <div class="block">
-          <b-button icon-left="plus" label="Add workplace" @click.prevent="addWorkplace" />
+          <b-button
+            icon-left="plus"
+            :label="$t('VIEWS.MANAGE.WORKPLACES.ADD_WORKPLACE_BTN')"
+            @click.prevent="addWorkplace"
+          />
         </div>
 
         <div class="block">
@@ -22,12 +26,12 @@
 
                 <div class="card-content">
                   <div class="content">
-                    <b-field label="Address">
-                      {{ workplace.address || 'None' }}
+                    <b-field :label="$t('VIEWS.MANAGE.WORKPLACES.FIELDS.ADDRESS.LABEL')">
+                      {{ workplace.address || $t('MISC.NONE') }}
                     </b-field>
 
-                    <b-field label="Description">
-                      {{ workplace.description || 'None' }}
+                    <b-field :label="$t('VIEWS.MANAGE.WORKPLACES.FIELDS.DESCRIPTION.LABEL')">
+                      {{ workplace.description || $t('MISC.NONE') }}
                     </b-field>
                   </div>
                 </div>
@@ -41,7 +45,7 @@
                     <b-icon icon="edit" />
 
                     <span>
-                      Edit
+                      {{ $t('MISC.ACTIONS.EDIT') }}
                     </span>
                   </a>
 
@@ -53,7 +57,7 @@
                     <b-icon icon="trash" />
 
                     <span>
-                      Delete
+                      {{ $t('MISC.ACTIONS.DELETE') }}
                     </span>
                   </a>
                 </footer>
@@ -63,7 +67,7 @@
 
           <div v-else>
             <h3 class="subtitle has-text-centered">
-              You do not have any workplace
+              {{ $t('VIEWS.MANAGE.WORKPLACES.NO_WOKPLACES_MSG') }}
             </h3>
           </div>
         </div>
@@ -92,10 +96,6 @@ export default Vue.extend({
     ...mapGetters({ workplaces: 'manage/workplaces/workplaces' }),
   },
 
-  created() {
-    document.title = `Shift Manager - My workplaces`;
-  },
-
   methods: {
     addWorkplace() {
       const modal = this.$buefy.modal.open({
@@ -120,7 +120,7 @@ export default Vue.extend({
             }
 
             this.$buefy.toast.open({
-              message: 'Workplace added successfully',
+              message: this.$t('VIEWS.MANAGE.WORKPLACES.WORKPLACE_ADDED_SUCCESS_MSG') as string,
               type: 'is-success',
             });
 
@@ -155,7 +155,7 @@ export default Vue.extend({
             }
 
             this.$buefy.toast.open({
-              message: 'Workplace saved successfully',
+              message: this.$t('VIEWS.MANAGE.WORKPLACES.WORKPLACE_SAVED_SUCCESS_MSG') as string,
               type: 'is-success',
             });
 
@@ -185,7 +185,7 @@ export default Vue.extend({
             }
 
             this.$buefy.toast.open({
-              message: 'Workplace removed successfully',
+              message: this.$t('VIEWS.MANAGE.WORKPLACES.WORKPLACE_REMOVED_SUCCESS_MSG') as string,
               type: 'is-danger',
             });
 

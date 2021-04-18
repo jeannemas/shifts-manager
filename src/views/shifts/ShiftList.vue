@@ -1,26 +1,26 @@
 <template>
   <div :data-vue-component="$options.name">
     <b-table :data="[...unfinishedShifts, ...finishedShifts]" detailed detail-key="id" narrowed>
-      <b-table-column field="workplace" label="Workplace">
+      <b-table-column field="workplace">
         <template #header>
           <b-icon icon="building" />
 
           <span>
-            Workplace
+            {{ $t('VIEWS.SHIFTS.FIELDS.WORKPLACE.LABEL') }}
           </span>
         </template>
 
         <template #default="props">
-          {{ (findWorkplaceById(props.row.workplaceId) || {}).name || 'None' }}
+          {{ (findWorkplaceById(props.row.workplaceId) || {}).name || $t('MISC.NONE') }}
         </template>
       </b-table-column>
 
-      <b-table-column field="title" label="Title">
+      <b-table-column field="title">
         <template #header>
           <b-icon icon="heading" />
 
           <span>
-            Title
+            {{ $t('VIEWS.SHIFTS.FIELDS.TITLE.LABEL') }}
           </span>
         </template>
 
@@ -29,12 +29,12 @@
         </template>
       </b-table-column>
 
-      <b-table-column field="shiftLength" label="Shift length">
+      <b-table-column field="shiftLength">
         <template #header>
           <b-icon icon="stopwatch" />
 
           <span>
-            Shift length
+            {{ $t('VIEWS.SHIFTS.FIELDS.SHIFT_LENGTH.LABEL') }}
           </span>
         </template>
 
@@ -50,7 +50,7 @@
               v-if="!props.row.endTime"
               size="is-small"
               icon-left="check"
-              label="Finish now"
+              :label="$t('VIEWS.SHIFTS.HOME.FINISH_SHIFT_BTN')"
               @click="() => finish(props.row)"
             />
 
@@ -78,7 +78,7 @@
 
       <template #empty>
         <h3 class="subtitle has-text-centered">
-          You do not have any finished shift
+          {{ $t('VIEWS.SHIFTS.HOME.NO_SHIFTS_MSG') }}
         </h3>
       </template>
     </b-table>

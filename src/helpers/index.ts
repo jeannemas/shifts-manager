@@ -21,3 +21,17 @@ export const FirestoreWrapper = (userId: string) => {
     shift,
   };
 };
+
+export class PageTitleManager {
+  private _baseTitle: string;
+
+  public constructor(baseTitle: string) {
+    this._baseTitle = baseTitle;
+  }
+
+  public updateTitle(titleSegment: string): string {
+    document.title = `${this._baseTitle} - ${titleSegment}`;
+
+    return document.title;
+  }
+}

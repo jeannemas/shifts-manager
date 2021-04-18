@@ -3,17 +3,20 @@
     <b-navbar type="is-light" shadow>
       <template #brand>
         <b-navbar-item tag="router-link" :to="{ name: 'HomePage' }">
-          Shifts Manager
+          {{ $t('MISC.APP_NAME') }}
         </b-navbar-item>
       </template>
 
       <template v-if="isAuthenticated" #start>
-        <b-navbar-dropdown label="Shifts" boxed>
+        <b-navbar-dropdown
+          :label="$t('COMPONENTS.NAVBAR.AUTHENTICATED.SHIFTS_DROPDOWN.HEADER')"
+          boxed
+        >
           <b-navbar-item tag="router-link" :to="{ name: 'Shifts/Home' }">
             <b-icon icon="list" />
 
             <span>
-              My shifts
+              {{ $t('COMPONENTS.NAVBAR.AUTHENTICATED.SHIFTS_DROPDOWN.ITEMS.MY_SHIFTS') }}
             </span>
           </b-navbar-item>
 
@@ -21,7 +24,7 @@
             <b-icon icon="pen" />
 
             <span>
-              Log shift
+              {{ $t('COMPONENTS.NAVBAR.AUTHENTICATED.SHIFTS_DROPDOWN.ITEMS.LOG_SHIFT') }}
             </span>
           </b-navbar-item>
         </b-navbar-dropdown>
@@ -35,7 +38,13 @@
             </template>
 
             <b-navbar-item tag="div">
-              <span> Welcome {{ currentUser.displayName }}</span>
+              <span>
+                {{
+                  $t('COMPONENTS.NAVBAR.AUTHENTICATED.GREETING_MESSAGE', {
+                    name: currentUser.displayName,
+                  })
+                }}
+              </span>
             </b-navbar-item>
 
             <hr class="dropdown-divider" />
@@ -44,7 +53,7 @@
               <b-icon icon="building" />
 
               <span>
-                My workplaces
+                {{ $t('COMPONENTS.NAVBAR.AUTHENTICATED.MANAGE_WORKPLACES') }}
               </span>
             </b-navbar-item>
 
@@ -57,7 +66,7 @@
               <b-icon icon="sign-out-alt" />
 
               <span>
-                Sign-out
+                {{ $t('MISC.AUTH.SIGN_OUT') }}
               </span>
             </b-navbar-item>
           </b-navbar-dropdown>
@@ -67,11 +76,11 @@
           <b-navbar-item tag="div">
             <div class="buttons">
               <router-link class="button is-primary" :to="{ name: 'Auth/SignUp' }">
-                Sign-up
+                {{ $t('MISC.AUTH.SIGN_UP') }}
               </router-link>
 
               <router-link class="button is-dark" :to="{ name: 'Auth/LogIn' }">
-                Log-in
+                {{ $t('MISC.AUTH.LOG_IN') }}
               </router-link>
             </div>
           </b-navbar-item>

@@ -6,24 +6,24 @@
           <div class="columns is-centered">
             <div class="column is-5-tablet is-4-desktop is-3-widescreen">
               <form ref="form" class="box" method="POST" @submit.prevent="login">
-                <b-field label="Email">
+                <b-field :label="$t('VIEWS.AUTH.LOG_IN.FIELDS.EMAIL.LABEL')">
                   <b-input
                     v-model="form.email"
                     type="email"
                     name="email"
-                    placeholder="e.g. john.doe@example.com"
+                    :placeholder="$t('VIEWS.AUTH.LOG_IN.FIELDS.EMAIL.PLACEHOLDER')"
                     required
                     icon="envelope"
                     autocomplete="email"
                   />
                 </b-field>
 
-                <b-field label="Password">
+                <b-field :label="$t('VIEWS.AUTH.LOG_IN.FIELDS.PASSWORD.LABEL')">
                   <b-input
                     v-model="form.password"
                     type="password"
                     name="password"
-                    placeholder="****************"
+                    :placeholder="$t('VIEWS.AUTH.LOG_IN.FIELDS.PASSWORD.PLACEHOLDER')"
                     required
                     icon="lock"
                     autocomplete="current-password"
@@ -32,7 +32,7 @@
 
                 <b-field class="has-text-centered">
                   <button class="button is-success" type="submit">
-                    Log-in
+                    {{ $t('MISC.AUTH.LOG_IN') }}
                   </button>
                 </b-field>
 
@@ -93,10 +93,6 @@ export default Vue.extend({
     },
   },
 
-  created() {
-    document.title = 'Shifts Manager - Log-in';
-  },
-
   methods: {
     async login() {
       if (!(this.$refs.form as HTMLFormElement).checkValidity()) {
@@ -108,7 +104,7 @@ export default Vue.extend({
       } catch (error) {
         console.error(error);
 
-        this.errorMessage = 'Invalid email and/or passwword';
+        this.errorMessage = this.$t('ERRORS.INVALID_LOGIN_CREDENTIALS');
       }
     },
   },

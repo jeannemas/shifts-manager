@@ -1,10 +1,14 @@
 <template>
   <div :data-vue-component="$options.name">
     <form method="POST" class="box" @submit.prevent="() => $emit('save', shift)">
-      <b-field label="Workplace">
-        <b-select v-model="shift.workplaceId" placeholder="None selected" expanded>
+      <b-field :label="$t('VIEWS.SHIFTS.FIELDS.WORKPLACE.LABEL')">
+        <b-select
+          v-model="shift.workplaceId"
+          :placeholder="$t('VIEWS.SHIFTS.EDITOR.NO_WORKPLACE_SELECTED')"
+          expanded
+        >
           <option :value="null">
-            None selected
+            {{ $t('VIEWS.SHIFTS.EDITOR.NO_WORKPLACE_SELECTED') }}
           </option>
 
           <option v-for="(workplace, index) in workplaces" :key="index" :value="workplace.id">
@@ -15,14 +19,14 @@
 
       <div class="columns">
         <div class="column is-half">
-          <b-field label="Start time" grouped group-multiline>
+          <b-field :label="$t('VIEWS.SHIFTS.FIELDS.START_TIME.LABEL')" grouped group-multiline>
             <div class="control">
-              <b-button label="Now" @click="() => (startTime = new Date())" />
+              <b-button :label="$t('MISC.NOW')" @click="() => (startTime = new Date())" />
             </div>
 
             <b-datetimepicker
               v-model="startTime"
-              placeholder="Click to select start time"
+              :placeholder="$t('VIEWS.SHIFTS.FIELDS.START_TIME.PLACEHOLDER')"
               required
               icon="hourglass-start"
               append-to-body
@@ -33,7 +37,7 @@
               <b-button
                 icon-left="times"
                 :disabled="startTime === null"
-                title="Reset start time"
+                :title="$t('VIEWS.SHIFTS.FIELDS.START_TIME.RESET')"
                 @click="() => (shift.startTime = null)"
               />
             </div>
@@ -42,19 +46,19 @@
 
         <div class="column is-half">
           <b-field
-            label="End time"
-            :message="{ 'End time must come after start time': endTimeIsInvalid }"
+            :label="$t('VIEWS.SHIFTS.FIELDS.END_TIME.LABEL')"
+            :message="{ [$t('VIEWS.SHIFTS.FIELDS.END_TIME.VALIDATION_MSG')]: endTimeIsInvalid }"
             :type="{ 'is-danger': endTimeIsInvalid }"
             grouped
             group-multiline
           >
             <div class="control">
-              <b-button label="Now" @click="() => (endTime = new Date())" />
+              <b-button :label="$t('MISC.NOW')" @click="() => (endTime = new Date())" />
             </div>
 
             <b-datetimepicker
               v-model="endTime"
-              placeholder="Click to select end time"
+              :placeholder="$t('VIEWS.SHIFTS.FIELDS.END_TIME.PLACEHOLDER')"
               icon="hourglass-end"
               append-to-body
               expanded
@@ -64,7 +68,7 @@
               <b-button
                 icon-left="times"
                 :disabled="endTime === null"
-                title="Reset end time"
+                :title="$t('VIEWS.SHIFTS.FIELDS.END_TIME.RESET')"
                 @click="() => (shift.endTime = null)"
               />
             </div>
@@ -72,15 +76,20 @@
         </div>
       </div>
 
-      <b-field label="Title">
-        <b-input v-model="shift.title" type="text" placeholder="Shift title" required />
+      <b-field :label="$t('VIEWS.SHIFTS.FIELDS.TITLE.LABEL')">
+        <b-input
+          v-model="shift.title"
+          type="text"
+          :placeholder="$t('VIEWS.SHIFTS.FIELDS.TITLE.PLACEHOLDER')"
+          required
+        />
       </b-field>
 
-      <b-field label="Description">
+      <b-field :label="$t('VIEWS.SHIFTS.FIELDS.DESCRIPTION.LABEL')">
         <b-input
           v-model="shift.description"
           type="textarea"
-          placeholder="Shift description"
+          :placeholder="$t('VIEWS.SHIFTS.FIELDS.DESCRIPTION.PLACEHOLDER')"
           maxlength="256"
           has-counter
         />
@@ -88,7 +97,7 @@
 
       <b-field>
         <button class="button is-primary" type="submit">
-          Save shift
+          {{ $t('VIEWS.SHIFTS.EDITOR.SAVE_SHIFT_BTN') }}
         </button>
       </b-field>
     </form>

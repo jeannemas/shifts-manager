@@ -4,7 +4,7 @@
       <div class="modal-card">
         <header class="modal-card-head">
           <p class="modal-card-title">
-            Remove workplace
+            {{ $t('VIEWS.MANAGE.WORKPLACES.DELETE.TITLE') }}
           </p>
 
           <button class="delete" @click="() => $emit('close')" />
@@ -18,13 +18,20 @@
           <hr />
 
           <h3 class="subtitle">
-            Are you sure you want to remove this workplace? <br />
-            You will not be able to assign shifts to it anymore.
+            <span>
+              {{ $t('VIEWS.MANAGE.WORKPLACES.DELETE.MESSAGE_PROMPT') }}
+            </span>
+
+            <br />
+
+            <span>
+              {{ $t('VIEWS.MANAGE.WORKPLACES.DELETE.MESSAGE_WARNING') }}
+            </span>
           </h3>
         </section>
 
         <footer class="modal-card-foot">
-          <b-button label="Cancel" @click="$emit('close')" />
+          <b-button :label="$t('MISC.ACTIONS.CANCEL')" @click="$emit('close')" />
 
           <button
             type="submit"
@@ -32,7 +39,7 @@
             :class="{ 'is-loading': loading }"
             :disabled="loading"
           >
-            Remove workplace
+            {{ $t('VIEWS.MANAGE.WORKPLACES.DELETE.REMOVE_WORKPLACE_BTN') }}
           </button>
         </footer>
       </div>

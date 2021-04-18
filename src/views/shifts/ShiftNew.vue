@@ -3,7 +3,7 @@
     <section class="section">
       <div class="container">
         <h1 class="title">
-          Log shift
+          {{ $t('VIEWS.SHIFTS.NEW.PAGE_TITLE') }}
         </h1>
 
         <shift-editor :shift="shift" @save="save" />
@@ -37,10 +37,6 @@ export default Vue.extend({
     };
   },
 
-  created() {
-    document.title = 'Shifts Manager - Log shift';
-  },
-
   methods: {
     async save() {
       try {
@@ -52,7 +48,7 @@ export default Vue.extend({
       }
 
       this.$buefy.toast.open({
-        message: 'Shift added successfully',
+        message: this.$t('VIEWS.SHIFTS.NEW.SHIFT_ADDED_SUCCESS_MSG') as string,
         type: 'is-success',
       });
 

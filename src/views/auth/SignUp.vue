@@ -6,36 +6,48 @@
           <div class="columns is-centered">
             <div class="column is-5-tablet is-4-desktop is-3-widescreen">
               <form ref="form" class="box" method="POST" @submit.prevent="signup">
-                <b-field label="Name">
+                <b-field :label="$t('VIEWS.AUTH.SIGN_UP.FIELDS.NAME.LABEL')">
                   <b-input
                     v-model="form.displayName"
                     type="text"
                     name="name"
-                    placeholder="John Doe"
+                    :placeholder="$t('VIEWS.AUTH.SIGN_UP.FIELDS.NAME.PLACEHOLDER')"
                     required
                     icon="user"
                     autocomplete="name"
                   />
                 </b-field>
 
-                <b-field label="Email">
+                <b-field :label="$t('VIEWS.AUTH.SIGN_UP.FIELDS.EMAIL.LABEL')">
                   <b-input
                     v-model="form.email"
                     type="email"
                     name="email"
-                    placeholder="e.g. john.doe@example.com"
+                    :placeholder="$t('VIEWS.AUTH.SIGN_UP.FIELDS.EMAIL.PLACEHOLDER')"
                     required
                     icon="envelope"
                     autocomplete="email"
                   />
                 </b-field>
 
-                <b-field label="Password">
+                <b-field :label="$t('VIEWS.AUTH.SIGN_UP.FIELDS.PASSWORD.LABEL')">
                   <b-input
                     v-model="form.password"
                     type="password"
                     name="password"
-                    placeholder="****************"
+                    :placeholder="$t('VIEWS.AUTH.SIGN_UP.FIELDS.PASSWORD.PLACEHOLDER')"
+                    required
+                    icon="lock"
+                    autocomplete="new-password"
+                  />
+                </b-field>
+
+                <b-field :label="$t('VIEWS.AUTH.SIGN_UP.FIELDS.CONFIRM_PASSWORD.LABEL')">
+                  <b-input
+                    v-model="confirmPassword"
+                    type="password"
+                    name="password"
+                    :placeholder="$t('VIEWS.AUTH.SIGN_UP.FIELDS.CONFIRM_PASSWORD.PLACEHOLDER')"
                     required
                     icon="lock"
                     autocomplete="new-password"
@@ -44,7 +56,7 @@
 
                 <div class="has-text-centered">
                   <button class="button is-success" type="submit">
-                    Sign-up
+                    {{ $t('MISC.AUTH.SIGN_UP') }}
                   </button>
                 </div>
 
@@ -75,6 +87,7 @@ export default Vue.extend({
         email: null as string | null,
         password: null as string | null,
       },
+      confirmPassword: null as string | null,
       errorMessage: null as string | null,
     };
   },
@@ -96,13 +109,13 @@ export default Vue.extend({
     },
   },
 
-  created() {
-    document.title = 'Shifts Manager - Sign-up';
-  },
-
   methods: {
     async signup() {
       if (!(this.$refs.form as HTMLFormElement).checkValidity()) {
+        return;
+      }
+
+      if (this.confirmPassword !== this.form.password) {
         return;
       }
 

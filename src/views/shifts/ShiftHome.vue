@@ -3,15 +3,15 @@
     <section class="section">
       <div class="container">
         <h1 class="title">
-          My shifts
+          {{ $t('VIEWS.SHIFTS.HOME.PAGE_TITLE') }}
         </h1>
 
         <b-tabs v-model="activeTabIndex" position="is-right" @input="tabChanged">
-          <b-tab-item icon="list" label="List">
+          <b-tab-item icon="list" :label="$t('VIEWS.SHIFTS.HOME.VIEWS.LIST')">
             <shift-list />
           </b-tab-item>
 
-          <b-tab-item icon="calendar-alt" label="Calendar">
+          <b-tab-item icon="calendar-alt" :label="$t('VIEWS.SHIFTS.HOME.VIEWS.CALENDAR')">
             <shift-calendar />
           </b-tab-item>
         </b-tabs>
@@ -44,10 +44,6 @@ export default Vue.extend({
       tabs,
       activeTabIndex,
     };
-  },
-
-  created() {
-    document.title = 'Shifts Manager - My shifts';
   },
 
   methods: {

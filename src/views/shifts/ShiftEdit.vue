@@ -3,7 +3,7 @@
     <section class="section">
       <div class="container">
         <h1 class="title">
-          Update shift
+          {{ $t('VIEWS.SHIFTS.EDIT.PAGE_TITLE') }}
         </h1>
 
         <shift-editor v-if="shift" :shift="shift" @save="save" />
@@ -47,17 +47,13 @@ export default Vue.extend({
     ...mapGetters({ shifts: 'shifts/shifts' }),
   },
 
-  created() {
-    document.title = 'Shifts Manager - Update shift';
-  },
-
   async mounted() {
     const shifts = this.shifts as RetrievableEntity<Shift>[];
     const shift = shifts.find(({ id }) => id === this.shiftId);
 
     if (!shift) {
       this.$buefy.dialog.alert({
-        message: 'This shift does not exist',
+        message: this.$t('ERRORS.SHIFT_NOT_FOUND') as string,
         type: 'is-danger',
       });
 
@@ -80,7 +76,7 @@ export default Vue.extend({
       }
 
       this.$buefy.toast.open({
-        message: 'Shift updated successfully',
+        message: this.$t('VIEWS.SHIFTS.EDIT.SHIFT_UPDATED_SUCCESS_MSG') as string,
         type: 'is-success',
       });
 
