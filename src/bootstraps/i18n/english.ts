@@ -20,6 +20,64 @@ export default {
     NOW: 'Now',
   },
 
+  ENTITIES: {
+    USER: {
+      NAME: {
+        LABEL: 'Name',
+        PLACEHOLDER: 'John Doe',
+      },
+      EMAIL: {
+        LABEL: 'Email',
+        PLACEHOLDER: 'e.g. john.doe@example.com',
+      },
+      PASSWORD: {
+        LABEL: 'Password',
+        PLACEHOLDER: '****************',
+      },
+    },
+    WORKPLACE: {
+      NAME: {
+        LABEL: 'Name',
+        PLACEHOLDER: 'Workplace name',
+      },
+      ADDRESS: {
+        LABEL: 'Address',
+        PLACEHOLDER: 'Workplace address',
+      },
+      DESCRIPTION: {
+        LABEL: 'Description',
+        PLACEHOLDER: 'Workplace description',
+      },
+    },
+    SHIFT: {
+      WORKPLACE: {
+        LABEL: 'Workplace',
+      },
+      START_TIME: {
+        LABEL: 'Start time',
+        PLACEHOLDER: 'Click to select start time',
+        RESET: 'Reset start time',
+      },
+      END_TIME: {
+        LABEL: 'End time',
+        PLACEHOLDER: 'Click to select end time',
+        RESET: 'Reset end time',
+        VALIDATION_MSG: 'End time must come after start time',
+      },
+      SHIFT_LENGTH: {
+        LABEL: 'Shift length',
+      },
+      TITLE: {
+        LABEL: 'Title',
+        PLACEHOLDER: 'Shift title',
+      },
+      DESCRIPTION: {
+        LABEL: 'Description',
+        PLACEHOLDER: 'Shift description',
+      },
+    },
+  },
+
   COMPONENTS: {
     NAVBAR: {
       // Authenticated navbar
@@ -58,18 +116,6 @@ export default {
       SIGN_UP: {
         PAGE_TITLE: 'Sign-up',
         FIELDS: {
-          NAME: {
-            LABEL: 'Name',
-            PLACEHOLDER: 'John Doe',
-          },
-          EMAIL: {
-            LABEL: 'Email',
-            PLACEHOLDER: 'e.g. john.doe@example.com',
-          },
-          PASSWORD: {
-            LABEL: 'Password',
-            PLACEHOLDER: '****************',
-          },
           CONFIRM_PASSWORD: {
             LABEL: 'Confirm password',
             PLACEHOLDER: '****************',
@@ -79,16 +125,6 @@ export default {
 
       LOG_IN: {
         PAGE_TITLE: 'Log-in',
-        FIELDS: {
-          EMAIL: {
-            LABEL: 'Email',
-            PLACEHOLDER: 'e.g. john.doe@example.com',
-          },
-          PASSWORD: {
-            LABEL: 'Password',
-            PLACEHOLDER: '****************',
-          },
-        },
       },
     },
 
@@ -100,20 +136,6 @@ export default {
         WORKPLACE_ADDED_SUCCESS_MSG: 'Workplace added successfully',
         WORKPLACE_SAVED_SUCCESS_MSG: 'Workplace saved successfully',
         WORKPLACE_REMOVED_SUCCESS_MSG: 'Workplace removed successfully',
-        FIELDS: {
-          NAME: {
-            LABEL: 'Name',
-            PLACEHOLDER: 'Workplace name',
-          },
-          ADDRESS: {
-            LABEL: 'Address',
-            PLACEHOLDER: 'Workplace address',
-          },
-          DESCRIPTION: {
-            LABEL: 'Description',
-            PLACEHOLDER: 'Workplace description',
-          },
-        },
         NEW: {
           TITLE: 'Add workplace',
           SAVE_WORKPLACE_BTN: 'Save workplace',
@@ -129,36 +151,22 @@ export default {
           REMOVE_WORKPLACE_BTN: 'Remove workplace',
         },
       },
+
+      ACCOUNT: {
+        PAGE_TITLE: 'My account',
+        PAGES: {
+          PROFILE: {
+            HEADER: 'Profile',
+            UPDATE_PROFILE_BTN: 'Update profile',
+          },
+          SECURITY: {
+            HEADER: 'Security',
+          },
+        },
+      },
     },
 
     SHIFTS: {
-      FIELDS: {
-        WORKPLACE: {
-          LABEL: 'Workplace',
-        },
-        START_TIME: {
-          LABEL: 'Start time',
-          PLACEHOLDER: 'Click to select start time',
-          RESET: 'Reset start time',
-        },
-        END_TIME: {
-          LABEL: 'End time',
-          PLACEHOLDER: 'Click to select end time',
-          RESET: 'Reset end time',
-          VALIDATION_MSG: 'End time must come after start time',
-        },
-        SHIFT_LENGTH: {
-          LABEL: 'Shift length',
-        },
-        TITLE: {
-          LABEL: 'Title',
-          PLACEHOLDER: 'Shift title',
-        },
-        DESCRIPTION: {
-          LABEL: 'Description',
-          PLACEHOLDER: 'Shift description',
-        },
-      },
       HOME: {
         PAGE_TITLE: 'My shifts',
         VIEWS: {

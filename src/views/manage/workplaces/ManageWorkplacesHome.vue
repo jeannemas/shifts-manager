@@ -26,11 +26,11 @@
 
                 <div class="card-content">
                   <div class="content">
-                    <b-field :label="$t('VIEWS.MANAGE.WORKPLACES.FIELDS.ADDRESS.LABEL')">
+                    <b-field :label="$t('ENTITIES.WORKPLACE.ADDRESS.LABEL')">
                       {{ workplace.address || $t('MISC.NONE') }}
                     </b-field>
 
-                    <b-field :label="$t('VIEWS.MANAGE.WORKPLACES.FIELDS.DESCRIPTION.LABEL')">
+                    <b-field :label="$t('ENTITIES.WORKPLACE.DESCRIPTION.LABEL')">
                       {{ workplace.description || $t('MISC.NONE') }}
                     </b-field>
                   </div>

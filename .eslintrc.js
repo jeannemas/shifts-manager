@@ -20,4 +20,11 @@ module.exports = {
     'vue/max-attributes-per-line': 'off',
     'vue/html-self-closing': 'off',
   },
+  settings: {
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
+      },
+    },
+  },
 };

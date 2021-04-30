@@ -11,32 +11,32 @@
         </header>
 
         <section class="modal-card-body">
-          <b-field :label="$t('VIEWS.MANAGE.WORKPLACES.FIELDS.NAME.LABEL')">
+          <b-field :label="$t('ENTITIES.WORKPLACE.NAME.LABEL')">
             <b-input
               v-model="workplaceName"
               type="text"
               name="name"
-              :placeholder="$t('VIEWS.MANAGE.WORKPLACES.FIELDS.NAME.PLACEHOLDER')"
+              :placeholder="$t('ENTITIES.WORKPLACE.NAME.PLACEHOLDER')"
               required
               icon="user"
             />
           </b-field>
 
-          <b-field :label="$t('VIEWS.MANAGE.WORKPLACES.FIELDS.ADDRESS.LABEL')">
+          <b-field :label="$t('ENTITIES.WORKPLACE.ADDRESS.LABEL')">
             <b-input
               v-model="workplaceAddress"
               type="text"
               name="address"
-              :placeholder="$t('VIEWS.MANAGE.WORKPLACES.FIELDS.ADDRESS.PLACEHOLDER')"
+              :placeholder="$t('ENTITIES.WORKPLACE.ADDRESS.PLACEHOLDER')"
               icon="location-arrow"
             />
           </b-field>
 
-          <b-field :label="$t('VIEWS.MANAGE.WORKPLACES.FIELDS.DESCRIPTION.LABEL')">
+          <b-field :label="$t('ENTITIES.WORKPLACE.DESCRIPTION.LABEL')">
             <b-input
               v-model="workplaceDescription"
               type="textarea"
-              :placeholder="$t('VIEWS.MANAGE.WORKPLACES.FIELDS.DESCRIPTION.PLACEHOLDER')"
+              :placeholder="$t('ENTITIES.WORKPLACE.DESCRIPTION.PLACEHOLDER')"
               maxlength="256"
               has-counter
             />

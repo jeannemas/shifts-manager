@@ -1,7 +1,7 @@
 <template>
   <div :data-vue-component="$options.name">
     <form method="POST" class="box" @submit.prevent="() => $emit('save', shift)">
-      <b-field :label="$t('VIEWS.SHIFTS.FIELDS.WORKPLACE.LABEL')">
+      <b-field :label="$t('ENTITIES.SHIFT.WORKPLACE.LABEL')">
         <b-select
           v-model="shift.workplaceId"
           :placeholder="$t('VIEWS.SHIFTS.EDITOR.NO_WORKPLACE_SELECTED')"
@@ -19,14 +19,14 @@
 
       <div class="columns">
         <div class="column is-half">
-          <b-field :label="$t('VIEWS.SHIFTS.FIELDS.START_TIME.LABEL')" grouped group-multiline>
+          <b-field :label="$t('ENTITIES.SHIFT.START_TIME.LABEL')" grouped group-multiline>
             <div class="control">
               <b-button :label="$t('MISC.NOW')" @click="() => (startTime = new Date())" />
             </div>
 
             <b-datetimepicker
               v-model="startTime"
-              :placeholder="$t('VIEWS.SHIFTS.FIELDS.START_TIME.PLACEHOLDER')"
+              :placeholder="$t('ENTITIES.SHIFT.START_TIME.PLACEHOLDER')"
               required
               icon="hourglass-start"
               append-to-body
@@ -37,7 +37,7 @@
               <b-button
                 icon-left="times"
                 :disabled="startTime === null"
-                :title="$t('VIEWS.SHIFTS.FIELDS.START_TIME.RESET')"
+                :title="$t('ENTITIES.SHIFT.START_TIME.RESET')"
                 @click="() => (shift.startTime = null)"
               />
             </div>
@@ -46,8 +46,8 @@
 
         <div class="column is-half">
           <b-field
-            :label="$t('VIEWS.SHIFTS.FIELDS.END_TIME.LABEL')"
-            :message="{ [$t('VIEWS.SHIFTS.FIELDS.END_TIME.VALIDATION_MSG')]: endTimeIsInvalid }"
+            :label="$t('ENTITIES.SHIFT.END_TIME.LABEL')"
+            :message="{ [$t('ENTITIES.SHIFT.END_TIME.VALIDATION_MSG')]: endTimeIsInvalid }"
             :type="{ 'is-danger': endTimeIsInvalid }"
             grouped
             group-multiline
@@ -58,7 +58,7 @@
 
             <b-datetimepicker
               v-model="endTime"
-              :placeholder="$t('VIEWS.SHIFTS.FIELDS.END_TIME.PLACEHOLDER')"
+              :placeholder="$t('ENTITIES.SHIFT.END_TIME.PLACEHOLDER')"
               icon="hourglass-end"
               append-to-body
               expanded
@@ -68,7 +68,7 @@
               <b-button
                 icon-left="times"
                 :disabled="endTime === null"
-                :title="$t('VIEWS.SHIFTS.FIELDS.END_TIME.RESET')"
+                :title="$t('ENTITIES.SHIFT.END_TIME.RESET')"
                 @click="() => (shift.endTime = null)"
               />
             </div>
@@ -76,20 +76,20 @@
         </div>
       </div>
 
-      <b-field :label="$t('VIEWS.SHIFTS.FIELDS.TITLE.LABEL')">
+      <b-field :label="$t('ENTITIES.SHIFT.TITLE.LABEL')">
         <b-input
           v-model="shift.title"
           type="text"
-          :placeholder="$t('VIEWS.SHIFTS.FIELDS.TITLE.PLACEHOLDER')"
+          :placeholder="$t('ENTITIES.SHIFT.TITLE.PLACEHOLDER')"
           required
         />
       </b-field>
 
-      <b-field :label="$t('VIEWS.SHIFTS.FIELDS.DESCRIPTION.LABEL')">
+      <b-field :label="$t('ENTITIES.SHIFT.DESCRIPTION.LABEL')">
         <b-input
           v-model="shift.description"
           type="textarea"
-          :placeholder="$t('VIEWS.SHIFTS.FIELDS.DESCRIPTION.PLACEHOLDER')"
+          :placeholder="$t('ENTITIES.SHIFT.DESCRIPTION.PLACEHOLDER')"
           maxlength="256"
           has-counter
         />

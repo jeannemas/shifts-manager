@@ -1,6 +1,8 @@
 import i18n from '@/bootstraps/i18n';
 import { RouteConfig } from 'vue-router';
 
+import RootView from '@/components/RootView.vue';
+
 const routes: Array<RouteConfig> = [
   {
     path: '/shifts',
@@ -42,7 +44,7 @@ const routes: Array<RouteConfig> = [
       {
         path: 'workplaces',
         redirect: { name: 'Manage/Workplaces/Home' },
-        component: () => import('@/components/RootView.vue'),
+        component: RootView,
         children: [
           {
             path: '',
@@ -51,6 +53,34 @@ const routes: Array<RouteConfig> = [
             meta: {
               title: i18n.t('VIEWS.MANAGE.WORKPLACES.PAGE_TITLE'),
             },
+          },
+        ],
+      },
+      {
+        path: 'account',
+        redirect: { name: 'Manage/Account/Home' },
+        component: RootView,
+        children: [
+          {
+            path: '',
+            name: 'Manage/Account/Home',
+            redirect: { path: './profile' },
+            component: () => import('@/views/manage/account/ManageAccountHome.vue'),
+            meta: {
+              title: i18n.t('VIEWS.MANAGE.ACCOUNT.PAGE_TITLE'),
+            },
+            children: [
+              {
+                path: 'profile',
+                name: 'Manage/Account/Profile',
+                component: () => import('@/views/manage/account/ManageAccountProfile.vue'),
+              },
+              {
+                path: 'security',
+                name: 'Manage/Account/Security',
+                component: () => import('@/views/manage/account/ManageAccountSecurity.vue'),
+              },
+            ],
           },
         ],
       },

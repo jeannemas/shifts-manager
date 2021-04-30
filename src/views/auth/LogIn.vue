@@ -6,24 +6,24 @@
           <div class="columns is-centered">
             <div class="column is-5-tablet is-4-desktop is-3-widescreen">
               <form ref="form" class="box" method="POST" @submit.prevent="login">
-                <b-field :label="$t('VIEWS.AUTH.LOG_IN.FIELDS.EMAIL.LABEL')">
+                <b-field :label="$t('ENTITIES.USER.EMAIL.LABEL')">
                   <b-input
                     v-model="form.email"
                     type="email"
                     name="email"
-                    :placeholder="$t('VIEWS.AUTH.LOG_IN.FIELDS.EMAIL.PLACEHOLDER')"
+                    :placeholder="$t('ENTITIES.USER.EMAIL.PLACEHOLDER')"
                     required
                     icon="envelope"
                     autocomplete="email"
                   />
                 </b-field>
 
-                <b-field :label="$t('VIEWS.AUTH.LOG_IN.FIELDS.PASSWORD.LABEL')">
+                <b-field :label="$t('ENTITIES.USER.PASSWORD.LABEL')">
                   <b-input
                     v-model="form.password"
                     type="password"
                     name="password"
-                    :placeholder="$t('VIEWS.AUTH.LOG_IN.FIELDS.PASSWORD.PLACEHOLDER')"
+                    :placeholder="$t('ENTITIES.USER.PASSWORD.PLACEHOLDER')"
                     required
                     icon="lock"
                     autocomplete="current-password"

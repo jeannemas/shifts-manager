@@ -6,7 +6,7 @@
           <b-icon icon="building" />
 
           <span>
-            {{ $t('VIEWS.SHIFTS.FIELDS.WORKPLACE.LABEL') }}
+            {{ $t('ENTITIES.SHIFT.WORKPLACE.LABEL') }}
           </span>
         </template>
 
@@ -20,7 +20,7 @@
           <b-icon icon="heading" />
 
           <span>
-            {{ $t('VIEWS.SHIFTS.FIELDS.TITLE.LABEL') }}
+            {{ $t('ENTITIES.SHIFT.TITLE.LABEL') }}
           </span>
         </template>
 
@@ -34,7 +34,7 @@
           <b-icon icon="stopwatch" />
 
           <span>
-            {{ $t('VIEWS.SHIFTS.FIELDS.SHIFT_LENGTH.LABEL') }}
+            {{ $t('ENTITIES.SHIFT.SHIFT_LENGTH.LABEL') }}
           </span>
         </template>
 

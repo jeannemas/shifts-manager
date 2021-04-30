@@ -59,6 +59,16 @@
 
             <hr class="dropdown-divider" />
 
+            <b-navbar-item tag="router-link" :to="{ name: 'Manage/Account/Home' }">
+              <b-icon icon="user-circle" />
+
+              <span>
+                {{ $t('VIEWS.MANAGE.ACCOUNT.PAGE_TITLE') }}
+              </span>
+            </b-navbar-item>
+
+            <hr class="dropdown-divider" />
+
             <b-navbar-item
               tag="router-link"
               :to="{ name: 'Auth/SignOut', query: { redirect: $route.fullPath } }"
